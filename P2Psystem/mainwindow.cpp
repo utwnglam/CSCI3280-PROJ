@@ -18,7 +18,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     //QListWidgetItem *list = ui->songL->;
-    QFile file("C:\\Users\\user\\Desktop\\328\\3280pro\\music_database.txt");
+    /*
+     REMEMBER TO CHANGE THE PATH FIRST
+     */
+    QFile file("music_database.txt");
     if(!file.open(QIODevice::ReadOnly))
         QMessageBox::information(0,"database not found",file.errorString());
     QTextStream in(&file);
