@@ -4,7 +4,7 @@
 #include <iostream> 
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib,"msacm32.lib")
-int main()
+void play(char musicpath[], float speed)
 {
 	LPSTR szFileName;
 	LPSTR szPathName;
@@ -19,9 +19,8 @@ int main()
 	LONG lSoundOffset;
 	LONG lSoundLong;
 
-	char filename[100] = "ZenZenZense.wav";
 	//szFileName = (LPTSTR)filename;
-	szPathName = (LPTSTR)filename;
+	szPathName = (LPTSTR)musicpath;
 	HMMIO m_hmmio;
 	if (!(m_hmmio = mmioOpen(szPathName, NULL, MMIO_READ)))
 	{
@@ -75,7 +74,7 @@ int main()
 	}
 
 	HWAVEOUT hWaveOut;
-	lpFormat->nSamplesPerSec *= 1; // revise this variable for tunning the speed
+	lpFormat->nSamplesPerSec *= speed; // revise this variable for tuning the speed
 	waveOutOpen(&hWaveOut, WAVE_MAPPER, lpFormat, 0L, 0L, WAVE_FORMAT_DIRECT);
 
 	WAVEHDR WaveOutHdr;
