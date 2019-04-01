@@ -42,8 +42,8 @@ MainWindow::MainWindow(QWidget *parent) :
        // QListWidgetItem *item = ui->songL->item(i);
    // }
 
-    //QString lyric = this->getLyric(currentSongInfo.lyricLink);//从网上获取歌词
-     //lyricList = this->parse(lyric);//将lyric一行行地解析到lyricList
+    //QString lyric = this->getLyric(currentSongInfo.lyricLink);//get lyrics from web
+     //lyricList = this->parse(lyric);//get lyrics sentence by sentence to lyricList
     //list->setBackgroundColor(Qt::red);
     //mPlayer = new QMediaPlayer(this);
     //connect(mPlayer,&Qplayer::positionchanged,[&](qint64 pos){
@@ -94,15 +94,15 @@ void MainWindow::on_songL_currentItemChanged(QListWidgetItem *current, QListWidg
     ui->bandName->setText(current->text());
     ui->albumName->setText(current->text());
     ui->songName->setText(current->text());
-    //if( NULL == current )   //空指针不处理
+    //if( NULL == current )   //dont handle null ptr
     //{
      //   return;
     //}
     //ui->bandName->setText(current);
     //ui->albumName->setText(current);
     //ui->songName->setText(current);
-    //获取新选中条目的工具提示信息显示到单行编辑器
+    //get the next text and show to the strtooltip
     //QString strToolTip = current->toolTip();
     //ui->lineEditToolTip->setText( strToolTip );
-    //在 "编辑工具提示" 按钮对应的槽函数实现修改条目的工具提示
+    //
 }
