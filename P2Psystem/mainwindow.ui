@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>626</width>
-    <height>451</height>
+    <width>647</width>
+    <height>467</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,9 +18,9 @@
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>340</y>
-      <width>51</width>
-      <height>41</height>
+      <y>300</y>
+      <width>71</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -40,11 +40,17 @@ background-repeat: none;
 }</string>
     </property>
     <property name="text">
-     <string>play</string>
+     <string/>
     </property>
     <property name="icon">
-     <iconset>
-      <normaloff>../play.jpg</normaloff>../play.jpg</iconset>
+     <iconset resource="button.qrc">
+      <normaloff>:/btn/play/play-button.png</normaloff>:/btn/play/play-button.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>32</width>
+      <height>32</height>
+     </size>
     </property>
     <property name="autoRepeat">
      <bool>true</bool>
@@ -110,8 +116,8 @@ background-repeat: none;
      <rect>
       <x>150</x>
       <y>110</y>
-      <width>261</width>
-      <height>131</height>
+      <width>221</width>
+      <height>181</height>
      </rect>
     </property>
     <property name="text">
@@ -158,8 +164,8 @@ background-repeat: none;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>626</width>
-     <height>25</height>
+     <width>647</width>
+     <height>22</height>
     </rect>
    </property>
   </widget>
@@ -174,6 +180,8 @@ background-repeat: none;
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="button.qrc"/>
+ </resources>
  <connections/>
 </ui>
