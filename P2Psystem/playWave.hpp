@@ -6,15 +6,15 @@
 #include <fstream>
 #include <stdio.h>
 #pragma comment(lib, "winmm.lib")
-#pragma comment(lib,"msacm32.lib")
+#pragma comment(lib, "msacm32.lib")
 
 using namespace std;
 
 class WavePlayer
 {
 public:
-	WavePlayer() {};
-	~WavePlayer() {};
+        WavePlayer() {}
+        ~WavePlayer() {}
 
 	void playMusic(char musicpath[], float speed);
 	void stopPlaying();

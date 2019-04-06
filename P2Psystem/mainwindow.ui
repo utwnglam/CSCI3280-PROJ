@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="playButton">
     <property name="geometry">
      <rect>
-      <x>170</x>
-      <y>300</y>
+      <x>160</x>
+      <y>310</y>
       <width>71</width>
       <height>51</height>
      </rect>
@@ -157,6 +157,19 @@ background-repeat: none;
       <widget class="QListWidget" name="songL"/>
      </item>
     </layout>
+   </widget>
+   <widget class="QSlider" name="ProgressBar">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>280</y>
+      <width>261</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">

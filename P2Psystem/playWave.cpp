@@ -1,4 +1,4 @@
-#include "playWave.hpp"
+#include "./playWave.hpp"
 
 
 void WavePlayer::playMusic(char musicpath[], float speed)
@@ -87,7 +87,6 @@ void WavePlayer::playMusic(char musicpath[], float speed)
 
 	do {} while (waveOutUnprepareHeader(hWaveOut, &WaveOutHdr, sizeof(WAVEHDR)) == WAVERR_STILLPLAYING);
 	waveOutClose(hWaveOut);
-
 
 }
 

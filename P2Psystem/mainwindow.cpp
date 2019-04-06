@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-//#include <QMediaPlayer>
 #include <QFileDialog>
 #include <QFile>
 #include <QFileInfo>
@@ -11,20 +10,21 @@
 #include <QListWidget>
 #include <QtGui>
 #include <QtCore>
+#include <QStringList>
 
-class Songs{
-public:
-    QString fileName, songName, albumName, bandName;
-    Songs* next;
+struct User : QObjectUserData {
+    QString fileName;
+    QString songName;
+    QString bandName;
+    QString albumName;
 };
 
-Songs* DataBase;
+Q_DECLARE_METATYPE(User)
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow) {
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+{
     ui->setupUi(this);
-
+    setWindowTitle(tr("P2P Karaoke System"));
     /*
      REMEMBER TO CHANGE THE PATH FIRST
      */
@@ -33,29 +33,26 @@ MainWindow::MainWindow(QWidget *parent) :
         QMessageBox::information(0,"database not found",file.errorString());
 
     //INPUTING DATABASE INTO ARRAY
-    int databaseFlag = 1;
-    Songs* current;
     QTextStream in(&file);
     while(!(in.atEnd()))
     {
         QString line = in.readLine();
-        QStringList strlist  = line.split('\'');
-        ui->songL->addItem(strlist[3]);
-        Songs newSong;
-        newSong.fileName = strlist[1];
-        newSong.songName = strlist[3];
-        newSong.bandName = strlist[5];
-        newSong.albumName = strlist[7];
+        QStringList strlist = line.split('\'');
 
-        if(databaseFlag == 1) {
-            DataBase = &newSong;
-            current = &newSong;
-            databaseFlag = 0;
-        } else {
-            current->next = &newSong;
-            current = current->next;
-        }
+        QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
+        pItem->setData(Qt::UserRole, strlist[1]);
+        pItem->setData(Qt::UserRole + 1, strlist[3]);
+        pItem->setData(Qt::UserRole + 2, strlist[5]);
+        pItem->setData(Qt::UserRole + 3, strlist[7]);
+        pItem->setText(strlist[3]);
+        ui->songL->addItem(pItem);
 
+        /*
+        fileName is strlist[1], index: Qt::UserRole
+        songName is strlist[3], index: Qt::UserRole + 1
+        bandName is strlist[5], index: Qt::UserRole + 2
+        albumName is strlist[7], index: Qt::UserRole + 3
+        */
     }
     file.close();
 
@@ -67,10 +64,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QString lyric = this->getLyric(currentSongInfo.lyricLink);//get lyrics from web
     lyricList = this->parse(lyric);//get lyrics sentence by sentence to lyricList
     list->setBackgroundColor(Qt::red);
+
     mPlayer = new QMediaPlayer(this);
-    connect(mPlayer,&Qplayer::positionchanged,[&](qint64 pos){
-        ui->avance->setValue(pos);
-    });
+    connect(mPlayer, &QMediaPlayer::positionchanged, this, &MainWindow::on_positionChanged);
     */
 }
 
@@ -111,16 +107,12 @@ void MainWindow::on_playButton_clicked()
 
 void MainWindow::on_songL_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
-    Songs* songlistCurrent = DataBase;
-    /*
-    while (songlistCurrent->songName.compare(current->text()) != 0 && (songlistCurrent->next != NULL)) {
-        songlistCurrent = songlistCurrent->next;
-    }
-    ui->bandName->setText(songlistCurrent->bandName);
-    ui->albumName->setText(songlistCurrent->albumName);
-    ui->songName->setText(songlistCurrent->songName);
-    */
-    ui->bandName->setText(current->text());
-    ui->albumName->setText(current->text());
-    ui->songName->setText(current->text());
+    ui->songName->setText(current->data(Qt::UserRole + 1).toString());
+    ui->bandName->setText(current->data(Qt::UserRole + 2).toString());;
+    ui->albumName->setText(current->data(Qt::UserRole + 3).toString());;
+}
+
+void MainWindow::on_ProgressBar_sliderMoved(int position)
+{
+
 }

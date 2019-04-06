@@ -4,12 +4,13 @@
 #include <QMainWindow>
 #include <QListWidgetItem>
 #include <QListWidget>
+//#include "./playWave.hpp"
 
 namespace Ui {
 class MainWindow;
 }
-//class QMediaPlayer;
 
+//class QMediaPlayer;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -23,10 +24,10 @@ private slots:
     void on_Del_clicked();
     void on_playButton_clicked();
     void on_songL_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+    void on_ProgressBar_sliderMoved(int position);
 
 private:
     Ui::MainWindow *ui;
-   // QMediaPlayer *mPlayer;
 };
 
 #endif // MAINWINDOW_H
