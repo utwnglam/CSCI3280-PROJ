@@ -13,7 +13,7 @@
 #include <QStringList>
 
 struct User : QObjectUserData {
-    QString fileName;
+    QString pathName;
     QString songName;
     QString bandName;
     QString albumName;
@@ -77,14 +77,24 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_Add_clicked()
 {
-    QString filename=QFileDialog::getOpenFileName(this,"Add");
+    QString filename = QFileDialog::getOpenFileName(this,"Add", "/", "WAVE files(*.wav)");
     if(filename==NULL){
         return;
     }
-    ui->songL->addItem(filename);
+    QStringList getSongName = filename.split('/');
+    QString songName = getSongName[getSongName.length()-1];
+
+    QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
+
+    // SAVING FULL PATH INTO FILENAME
+    pItem->setData(Qt::UserRole, filename);
+    songName.chop(4);
+    pItem->setData(Qt::UserRole + 1, songName);
+    pItem->setText(songName);
+    ui->songL->addItem(pItem);
+
     //mPlayer->setMedia(QUrl::fromLocalFile(filename));
     //on_playButton_clicked();
-
 }
 
 void MainWindow::on_Del_clicked()
@@ -108,8 +118,17 @@ void MainWindow::on_playButton_clicked()
 void MainWindow::on_songL_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
     ui->songName->setText(current->data(Qt::UserRole + 1).toString());
-    ui->bandName->setText(current->data(Qt::UserRole + 2).toString());;
-    ui->albumName->setText(current->data(Qt::UserRole + 3).toString());;
+    ui->bandName->setText(current->data(Qt::UserRole + 2).toString());
+    ui->albumName->setText(current->data(Qt::UserRole + 3).toString());
+
+    /*
+     * FOR TRANSLATING QSTRING TO CHAR*
+     *
+    QString temp = current->data(Qt::UserRole).toString();
+    QByteArray byteArray = temp.toLocal8Bit();
+    char *c = byteArray.data();
+    kernel->playMusic(c, 1.0);
+    */
 }
 
 void MainWindow::on_ProgressBar_sliderMoved(int position)

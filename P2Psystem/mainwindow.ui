@@ -44,7 +44,7 @@ background-repeat: none;
     </property>
     <property name="icon">
      <iconset resource="button.qrc">
-      <normaloff>:/btn/play/play-button.png</normaloff>:/btn/play/play-button.png</iconset>
+      <normaloff>:/btn/play/images/play.png</normaloff>:/btn/play/images/play.png</iconset>
     </property>
     <property name="iconSize">
      <size>

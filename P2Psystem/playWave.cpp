@@ -1,5 +1,6 @@
 #include "./playWave.hpp"
-
+#define _CRT_SECURE_NO_WARNINGS
+#undef UNICODE
 
 void WavePlayer::playMusic(char musicpath[], float speed)
 {

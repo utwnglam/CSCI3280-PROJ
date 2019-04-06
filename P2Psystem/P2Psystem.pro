@@ -25,8 +25,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp
-# SOURCES += playWave.cpp
-# SOURCES += playWave.hpp
 
 HEADERS  += mainwindow.h
 

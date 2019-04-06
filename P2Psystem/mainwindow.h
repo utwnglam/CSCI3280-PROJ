@@ -28,6 +28,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    //WavePlayer *kernel;
 };
 
 #endif // MAINWINDOW_H

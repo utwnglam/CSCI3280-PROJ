@@ -1,4 +1,6 @@
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS
+#undef UNICODE
 #include <iostream>
 #include <Windows.h>
 #include <mmsystem.h>
