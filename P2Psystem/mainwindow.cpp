@@ -224,6 +224,7 @@ void MainWindow::on_playButton_clicked()
     } else {
         //mPlayer->stop();
         ui->playButton->setText("play");
+        std::cout << "the music is stop!" << endl;
     }
 }
 /*
