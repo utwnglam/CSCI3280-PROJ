@@ -105,6 +105,11 @@ void MainWindow::on_Add_clicked()
     QStringList tmpList=tmp.split('.');
     tmpList.removeLast();
 
+    std::string song=tmp.toStdString().c_str();//Qstring to string
+    std::string newpath="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song;
+    QString qnewPath=QString::fromStdString(newpath.c_str());//string to Qstring
+    QFile::copy(path, qnewPath);//copy the new song to music folder
+
     QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
     pItem->setData(Qt::UserRole, path);
     pItem->setData(Qt::UserRole + 1, tmpList[0]);
@@ -126,13 +131,22 @@ void MainWindow::on_Del_clicked()
 
 void MainWindow::on_playButton_clicked()
 {
-    QList<QListWidgetItem *> itemList = ui->songL->selectedItems();
-    int row= ui->songL->row(itemList[0]);
-    QString song = myList[row];
+    //QList<QListWidgetItem *> itemList = ui->songL->selectedItems();
+    //int row= ui->songL->row(itemList[0]);
+    int exist=0;
+    QString song = ui->songName->text();
     std::string song1=song.toStdString().c_str();
+    for(int i=0;i<myList.size();i++){//check is the song exit
+        if(song==myList[i]){
+            break;
+        }else if(i==myList.size()-1){
+            exist=1;
+        }
+    }
     std::string path="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song1+".wav";
 
-    if(ui->playButton->text() == "play"){
+
+    if((ui->playButton->text() == "play") && (exist==0)){
         //mPlayer -> play();
         LPSTR szFileName;
         LPTSTR szPathName;

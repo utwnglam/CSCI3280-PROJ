@@ -43,8 +43,15 @@ background-repeat: none;
      <string/>
     </property>
     <property name="icon">
-     <iconset resource="button.qrc">
-      <normaloff>:/btn/play/images/play.png</normaloff>:/btn/play/images/play.png</iconset>
+     <iconset>
+      <normaloff>images/play.png</normaloff>
+      <normalon>:/btn/play/images/play.png</normalon>
+      <disabledoff>:/btn/play/images/pause.png</disabledoff>
+      <disabledon>:/btn/play/images/pause.png</disabledon>
+      <activeoff>:/btn/play/images/play.png</activeoff>
+      <activeon>:/btn/play/images/play.png</activeon>
+      <selectedoff>:/btn/play/images/play.png</selectedoff>
+      <selectedon>:/btn/play/images/play.png</selectedon>images/play.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -201,7 +208,7 @@ background-repeat: none;
       <x>400</x>
       <y>340</y>
       <width>241</width>
-      <height>21</height>
+      <height>24</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout_2">
@@ -223,7 +230,7 @@ background-repeat: none;
       <x>400</x>
       <y>370</y>
       <width>241</width>
-      <height>21</height>
+      <height>24</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout_3">
@@ -274,8 +281,6 @@ background-repeat: none;
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="button.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
