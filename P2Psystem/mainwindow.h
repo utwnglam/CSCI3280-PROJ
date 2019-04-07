@@ -4,6 +4,10 @@
 #include <QMainWindow>
 #include <QListWidgetItem>
 #include <QListWidget>
+#include <QDir>
+#include <QDebug>
+#include <QRegExp>
+
 //#include "./playWave.hpp"
 
 namespace Ui {
@@ -26,9 +30,13 @@ private slots:
     void on_songL_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void on_ProgressBar_sliderMoved(int position);
 
+    void on_searchBar_textChanged(const QString &arg1);
+
+    void on_songL_itemDoubleClicked(QListWidgetItem *item);
+
 private:
     Ui::MainWindow *ui;
-    //WavePlayer *kernel;
+    QStringList myList;
 };
 
 #endif // MAINWINDOW_H

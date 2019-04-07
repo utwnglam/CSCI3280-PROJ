@@ -28,32 +28,42 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     /*
      REMEMBER TO CHANGE THE PATH FIRST
      */
-    QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/music_database.txt");
+    QDir myPath("C:/Users/user/CSCI3280-PROJ/P2Psystem/Music");
+    myPath.setFilter(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
+    myList = myPath.entryList();
+    //ui->songL->addItems(myList);
+
+    QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
     if(!file.open(QIODevice::ReadOnly))
         QMessageBox::information(0,"database not found",file.errorString());
 
     //INPUTING DATABASE INTO ARRAY
     QTextStream in(&file);
-    while(!(in.atEnd()))
+    for(int i = 0; i< myList.size();++i)
     {
         QString line = in.readLine();
         QStringList strlist = line.split('\'');
+        QString tmp = myList.at(i);
+        QStringList tmpList=tmp.split('.');
+        tmpList.removeLast();
+        myList[i]=tmpList[0];
 
         QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
         pItem->setData(Qt::UserRole, strlist[1]);
-        pItem->setData(Qt::UserRole + 1, strlist[3]);
+        pItem->setData(Qt::UserRole + 1, tmpList[0]);
         pItem->setData(Qt::UserRole + 2, strlist[5]);
         pItem->setData(Qt::UserRole + 3, strlist[7]);
-        pItem->setText(strlist[3]);
+        pItem->setText(tmpList[0]);
         ui->songL->addItem(pItem);
 
         /*
-        fileName is strlist[1], index: Qt::UserRole
+        pathName is strlist[1], index: Qt::UserRole
         songName is strlist[3], index: Qt::UserRole + 1
         bandName is strlist[5], index: Qt::UserRole + 2
         albumName is strlist[7], index: Qt::UserRole + 3
         */
     }
+
     file.close();
 
     /*
@@ -77,20 +87,21 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_Add_clicked()
 {
-    QString filename = QFileDialog::getOpenFileName(this,"Add", "/", "WAVE files(*.wav)");
-    if(filename==NULL){
+    QString path = QFileDialog::getOpenFileName(this,"Add");
+    if(path == NULL){
         return;
     }
-    QStringList getSongName = filename.split('/');
-    QString songName = getSongName[getSongName.length()-1];
+    QStringList filepath = path.split('/');
+    QString tmp =filepath[filepath.size()-1];
+    QStringList tmpList=tmp.split('.');
+    tmpList.removeLast();
 
     QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
-
-    // SAVING FULL PATH INTO FILENAME
-    pItem->setData(Qt::UserRole, filename);
-    songName.chop(4);
-    pItem->setData(Qt::UserRole + 1, songName);
-    pItem->setText(songName);
+    pItem->setData(Qt::UserRole, path);
+    pItem->setData(Qt::UserRole + 1, tmpList[0]);
+    pItem->setData(Qt::UserRole + 2, "N/A");
+    pItem->setData(Qt::UserRole + 3, "N/A");
+    pItem->setText(tmpList[0]);
     ui->songL->addItem(pItem);
 
     //mPlayer->setMedia(QUrl::fromLocalFile(filename));
@@ -117,13 +128,12 @@ void MainWindow::on_playButton_clicked()
 
 void MainWindow::on_songL_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
+    /*
     ui->songName->setText(current->data(Qt::UserRole + 1).toString());
     ui->bandName->setText(current->data(Qt::UserRole + 2).toString());
     ui->albumName->setText(current->data(Qt::UserRole + 3).toString());
 
-    /*
      * FOR TRANSLATING QSTRING TO CHAR*
-     *
     QString temp = current->data(Qt::UserRole).toString();
     QByteArray byteArray = temp.toLocal8Bit();
     char *c = byteArray.data();
@@ -134,4 +144,42 @@ void MainWindow::on_songL_currentItemChanged(QListWidgetItem *current, QListWidg
 void MainWindow::on_ProgressBar_sliderMoved(int position)
 {
 
+}
+
+void MainWindow::on_searchBar_textChanged(const QString &arg1)
+{
+    QRegExp regExp(arg1, Qt::CaseInsensitive, QRegExp::Wildcard);
+    ui->songL->clear();
+    QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
+    if(!file.open(QIODevice::ReadOnly))
+        QMessageBox::information(0,"database not found",file.errorString());
+    QTextStream in(&file);
+    for(int i = 0; i< myList.filter(regExp).size();++i)
+    {
+        while(!(in.atEnd())){
+            QString line = in.readLine();
+            QStringList strlist = line.split('\'');
+            if(QString::compare(myList.filter(regExp)[i], strlist[3], Qt::CaseInsensitive)==0 ||
+                    QString::compare(myList.filter(regExp)[i], strlist[5], Qt::CaseInsensitive)==0||
+                    QString::compare(myList.filter(regExp)[i], strlist[7], Qt::CaseInsensitive)==0){
+                QString tmp = myList.filter(regExp).at(i);
+                QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
+                pItem->setData(Qt::UserRole, strlist[1]);
+                pItem->setData(Qt::UserRole + 1, tmp);
+                pItem->setData(Qt::UserRole + 2, strlist[5]);
+                pItem->setData(Qt::UserRole + 3, strlist[7]);
+                pItem->setText(tmp);
+                ui->songL->addItem(pItem);
+                break;
+            }
+        }
+    }
+    file.close();
+}
+
+void MainWindow::on_songL_itemDoubleClicked(QListWidgetItem *item)
+{
+    ui->songName->setText(item->data(Qt::UserRole + 1).toString());
+    ui->bandName->setText(item->data(Qt::UserRole + 2).toString());;
+    ui->albumName->setText(item->data(Qt::UserRole + 3).toString());;
 }
