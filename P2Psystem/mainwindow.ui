@@ -198,8 +198,20 @@ background-repeat: none;
       <height>21</height>
      </rect>
     </property>
+    <property name="value">
+     <number>0</number>
+    </property>
+    <property name="sliderPosition">
+     <number>0</number>
+    </property>
+    <property name="tracking">
+     <bool>true</bool>
+    </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
+    </property>
+    <property name="tickPosition">
+     <enum>QSlider::NoTicks</enum>
     </property>
    </widget>
    <widget class="QWidget" name="formLayoutWidget_2">
@@ -259,6 +271,32 @@ background-repeat: none;
      <string>Edit</string>
     </property>
    </widget>
+   <widget class="QLabel" name="_length">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>310</y>
+      <width>31</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>00:00</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="timer">
+    <property name="geometry">
+     <rect>
+      <x>24</x>
+      <y>310</y>
+      <width>41</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>00:00</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -266,7 +304,7 @@ background-repeat: none;
      <x>0</x>
      <y>0</y>
      <width>654</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

@@ -34,6 +34,8 @@ private slots:
 
     void on_songL_itemDoubleClicked(QListWidgetItem *item);
 
+    //void on_ProgressBar_valueChanged(int value);
+
 private:
     Ui::MainWindow *ui;
     QStringList myList;

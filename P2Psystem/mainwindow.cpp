@@ -38,12 +38,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     /*
      REMEMBER TO CHANGE THE PATH FIRST
      */
-    QDir myPath("C:/Users/user/CSCI3280-PROJ/P2Psystem/Music");
+    //QDir myPath("C:/Users/user/CSCI3280-PROJ/P2Psystem/Music");
+    QDir myPath("E:\\Alisa\\Yr4_Sem2\\CSCI3280 Multimedia\\project\\CSCI3280-PROJ\\P2Psystem\\Music");
     myPath.setFilter(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
     myList = myPath.entryList();
     //ui->songL->addItems(myList);
 
-    QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
+    //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
+    QFile file("E:\\Alisa\\Yr4_Sem2\\CSCI3280 Multimedia\\project\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
     if(!file.open(QIODevice::ReadOnly))
         QMessageBox::information(0,"database not found",file.errorString());
 
@@ -106,7 +108,8 @@ void MainWindow::on_Add_clicked()
     tmpList.removeLast();
 
     std::string song=tmp.toStdString().c_str();//Qstring to string
-    std::string newpath="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song;
+    //std::string newpath="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song;
+    std::string newpath="E:\\Alisa\\Yr4_Sem2\\CSCI3280 Multimedia\\project\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song;
     QString qnewPath=QString::fromStdString(newpath.c_str());//string to Qstring
     QFile::copy(path, qnewPath);//copy the new song to music folder
 
@@ -143,7 +146,8 @@ void MainWindow::on_playButton_clicked()
             exist=1;
         }
     }
-    std::string path="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song1+".wav";
+    //std::string path="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song1+".wav";
+    std::string path="E:\\Alisa\\Yr4_Sem2\\CSCI3280 Multimedia\\project\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song1+".wav";
 
 
     if((ui->playButton->text() == "play") && (exist==0)){
@@ -164,7 +168,7 @@ void MainWindow::on_playButton_clicked()
 
         //szFileName = (LPTSTR)filename;
         szPathName = (LPTSTR)path.c_str();
-        float speed = 0.8;
+        float speed = 1.0;
         HMMIO m_hmmio;
         printf("%s\n", szPathName);
         if (!(m_hmmio = mmioOpen(szPathName, NULL, MMIO_READ)))
@@ -231,7 +235,17 @@ void MainWindow::on_playButton_clicked()
         WaveOutHdr.dwLoops = 0L;
         waveOutPrepareHeader(hWaveOut, &WaveOutHdr, sizeof(WAVEHDR));
         waveOutWrite(hWaveOut, &WaveOutHdr, sizeof(WAVEHDR));
-
+        int min=0, sec=0, total_sec;
+        min = (int)(m_dwDataSize/lpFormat->nAvgBytesPerSec/60);
+        sec = (int)(m_dwDataSize/lpFormat->nAvgBytesPerSec%60);
+        total_sec = (int)(m_dwDataSize/lpFormat->nAvgBytesPerSec);
+        qDebug() << "the length of a song is" << m_dwDataSize <<"/" << lpFormat->nAvgBytesPerSec <<"is" << min << ":" << sec;
+        int slider_pos = 0;
+        ui->ProgressBar->setValue(slider_pos);
+        //slider_pos = int(current_sec/total_sec) * 100; // update the slider position by current playing time
+        //update timer label
+        //ui->_length->setText(min + ":" + sec);
+        //ui->timer->setText(current_sec/60 + ":" + current_sec%60);
         do {} while (waveOutUnprepareHeader(hWaveOut, &WaveOutHdr, sizeof(WAVEHDR)) == WAVERR_STILLPLAYING);
         waveOutClose(hWaveOut);
         ui->playButton->setText("stop");
@@ -258,7 +272,8 @@ void MainWindow::on_searchBar_textChanged(const QString &arg1)
 {
     QRegExp regExp(arg1, Qt::CaseInsensitive, QRegExp::Wildcard);
     ui->songL->clear();
-    QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
+    //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
+    QFile file("E:\\Alisa\\Yr4_Sem2\\CSCI3280 Multimedia\\project\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
     if(!file.open(QIODevice::ReadOnly))
         QMessageBox::information(0,"database not found",file.errorString());
     QTextStream in(&file);
