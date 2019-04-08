@@ -45,12 +45,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     /*
      REMEMBER TO CHANGE THE PATH FIRST
      */
-
-    ui->speedDrop->addItem("x 0.5");
-    ui->speedDrop->addItem("x 1.0");
-    ui->speedDrop->addItem("x 1.5");
-    ui->speedDrop->addItem("x 1.75");
-    ui->speedDrop->addItem("x 2.0");
+    ui->speedControl->setValue(1.0);
     //QDir myPath("C:/Users/user/CSCI3280-PROJ/P2Psystem/Music");
     QDir myPath("../P2Psystem/Music");
     myPath.setFilter(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
@@ -189,33 +184,19 @@ void MainWindow::ontimeUpdate(unsigned int cur_time)
 void MainWindow::onsliderUpdate(unsigned int cur_pos)
 {
     ui->ProgressBar->setValue(cur_pos);
-    qDebug() << "cur position" << cur_pos;
 }
 
 void MainWindow::onGetLength(QString leng)
 {
-    qDebug() << "transfer length is" << leng;
     ui->_length->setText(leng);
 }
 
 void MainWindow::on_playButton_clicked()
 {
     float speed;
-    qDebug() << "the speed selected" << ui->speedDrop->currentIndex() << ui->speedDrop->currentText();
     //QList<QListWidgetItem *> itemList = ui->songL->selectedItems();
     //int row= ui->songL->row(itemList[0]);f
-    switch(ui->speedDrop->currentIndex()) {
-        case 0 : speed = 0.5; // prints "1"
-                 break;       // and exits the switch
-        case 1 : speed = 1.0;
-                 break;
-        case 2 : speed = 1.5;
-             break;
-        case 3 : speed = 1.75;
-             break;
-        case 4 : speed = 2.0;
-             break;
-    }
+    speed = (float)ui->speedControl->value();
     int exist=0;
     QString song = ui->songName->text();
     //std::string song1=song.toStdString().c_str();

@@ -228,7 +228,7 @@ void playthread::playwave(){
         {
             emit timeUpdate(real_time);
             test = ((double)real_time/(double)total_sec)*100;
-            qDebug() << real_time << "/" << total_sec << "*100= the slider pos" << QString::number(test, 'f', 2);
+            //qDebug() << real_time << "/" << total_sec << "*100= the slider pos" << QString::number(test, 'f', 2);
             emit sliderUpdate((int)test);
         }
         time_temp = real_time;
