@@ -12,7 +12,8 @@ public:
     void run();
     bool Stop;
     QString song;
-
+    const char *readLine(FILE *file);
+    int calculatingTime(char min[], char sec[], double speed);
 signals:
     void play();
 
@@ -23,6 +24,7 @@ private:
     //std::string song1;
     //QString song;
     //int exist;
+
 };
 
 #endif // PLAYTHREAD_H

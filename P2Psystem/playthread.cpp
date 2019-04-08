@@ -10,9 +10,10 @@
 #include <string>
 #include <fstream>
 #include <stdio.h>
-
+#include <string.h>
 #include "playthread.h"
-
+#include <cstdio>
+#include <ctime>
 #include <QtCore>
 #include <QDebug>
 #include <QStringList>
@@ -35,11 +36,61 @@ void playthread::run(){
     exec();
 }
 
+const char * playthread::readLine(FILE *file) {
+
+    if (file == NULL) {
+        printf("Error: file pointer is null.");
+        exit(1);
+    }
+
+    int maximumLineLength = 128;
+    char *lineBuffer = (char *)malloc(sizeof(char) * maximumLineLength);
+
+    if (lineBuffer == NULL) {
+        printf("Error allocating memory for line buffer.");
+        exit(1);
+    }
+
+    char ch = getc(file);
+    int count = 0;
+
+    while ((ch != '\n') && (ch != EOF)) {
+        if (count == maximumLineLength) {
+            maximumLineLength += 128;
+            lineBuffer = (char*)realloc(lineBuffer, maximumLineLength);
+            if (lineBuffer == NULL) {
+                printf("Error reallocating space for line buffer.");
+                exit(1);
+            }
+        }
+        lineBuffer[count] = ch;
+        count++;
+
+        ch = getc(file);
+    }
+
+    lineBuffer[count] = '\0';
+    char* line = (char*)malloc(sizeof(char) * (count + 1));
+    strncpy(line, lineBuffer, (count + 1));
+    free(lineBuffer);
+    const char *constLine = line;
+    return constLine;
+}
+
+int playthread::calculatingTime(char min[], char sec[], double speed)
+{
+    int minutes = atoi(min);
+    int seconds = atoi(sec);
+
+    int timeCalculated = (int)((minutes * 60 + seconds)/ speed);
+    return timeCalculated;
+}
+
 void playthread::playwave(){
     std::string song1=this->song.toStdString().c_str();
     //std::string path="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song1+".wav";
     std::string path="../P2Psystem/Music/"+song1+".wav";
-
+    std::string pathLyric="../P2Psystem/Lyric/"+song1+".txt";
     LPSTR szFileName;
     LPTSTR szPathName;
     MMCKINFO mmckinfoParent;
@@ -56,9 +107,36 @@ void playthread::playwave(){
 
     //szFileName = (LPTSTR)filename;
     szPathName = (LPTSTR)path.c_str();
-    float speed = 1.0;
+    float speed = 3.0;
     HMMIO m_hmmio;
-    printf("%s\n", szPathName);
+    //printf("%s\n", szPathName);
+    // lyrics start
+    const char* lyricPath = pathLyric.c_str();
+        FILE * fp = fopen(lyricPath, "r");
+        if (fp == NULL)
+        {
+            qDebug() <<"Error while opening the file.\n";
+        }
+        char mins[3];
+        char secs[3];
+        char timeBuff[12];
+        fgets(timeBuff, 11, (FILE*)fp);
+        const char *line = readLine(fp);
+        int nextLyricTime;
+        mins[0] = timeBuff[1];
+        mins[1] = timeBuff[2];
+        mins[2] = 0;
+        secs[0] = timeBuff[4];
+        secs[1] = timeBuff[5];
+        secs[2] = 0;
+        qDebug() << mins[0];
+        qDebug() << mins[1];
+        qDebug() << secs[0];
+        qDebug() << secs[1];
+
+        nextLyricTime = calculatingTime(mins, secs, speed);
+        qDebug() << nextLyricTime;
+    // lyrics end
     if (!(m_hmmio = mmioOpen(szPathName, NULL, MMIO_READ)))
     {
         printf("fail in mmioOpen\n");
@@ -134,8 +212,24 @@ void playthread::playwave(){
     //update timer label
     //ui->_length->setText(min + ":" + sec);
     //ui->timer->setText(current_sec/60 + ":" + current_sec%60);
-    int count=0;
+    std::clock_t start;
+    double duration;
+    start = std::clock();
     do {
+        duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+                if (nextLyricTime == (int)duration)
+                {
+                    nextLyricTime--;
+                    qDebug() << line;
+                    //ui->lyrics->setText(line);
+                    fgets(timeBuff, 11, (FILE*)fp);
+                    line = readLine(fp);
+                    mins[0] = timeBuff[1];
+                    mins[1] = timeBuff[2];
+                    secs[0] = timeBuff[4];
+                    secs[1] = timeBuff[5];
+                    nextLyricTime = calculatingTime(mins, secs, speed);
+                }
         if(!this->Stop){
            break;
         }

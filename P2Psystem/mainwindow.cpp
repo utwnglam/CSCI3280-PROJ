@@ -140,7 +140,7 @@ void MainWindow::onplay(){
 void MainWindow::on_playButton_clicked()
 {
     //QList<QListWidgetItem *> itemList = ui->songL->selectedItems();
-    //int row= ui->songL->row(itemList[0]);
+    //int row= ui->songL->row(itemList[0]);f
     int exist=0;
     QString song = ui->songName->text();
     //std::string song1=song.toStdString().c_str();
