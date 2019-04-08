@@ -114,30 +114,37 @@ void playthread::playwave(){
     //printf("%s\n", szPathName);
     // lyrics start
     const char* lyricPath = pathLyric.c_str();
+    char mins[3];
+    char secs[3];
+    char timeBuff[12];
+    int nextLyricTime;
+    const char *line;
         FILE * fp = fopen(lyricPath, "r");
         if (fp == NULL)
         {
             qDebug() <<"Error while opening the file.\n";
         }
-        char mins[3];
-        char secs[3];
-        char timeBuff[12];
-        fgets(timeBuff, 11, (FILE*)fp);
-        const char *line = readLine(fp);
-        int nextLyricTime;
-        mins[0] = timeBuff[1];
-        mins[1] = timeBuff[2];
-        mins[2] = 0;
-        secs[0] = timeBuff[4];
-        secs[1] = timeBuff[5];
-        secs[2] = 0;
-        qDebug() << mins[0];
-        qDebug() << mins[1];
-        qDebug() << secs[0];
-        qDebug() << secs[1];
+        else
+        {
 
-        nextLyricTime = calculatingTime(mins, secs, speed);
-        qDebug() << nextLyricTime;
+            fgets(timeBuff, 11, (FILE*)fp);
+            line = readLine(fp);
+
+            mins[0] = timeBuff[1];
+            mins[1] = timeBuff[2];
+            mins[2] = 0;
+            secs[0] = timeBuff[4];
+            secs[1] = timeBuff[5];
+            secs[2] = 0;
+            qDebug() << mins[0];
+            qDebug() << mins[1];
+            qDebug() << secs[0];
+            qDebug() << secs[1];
+
+            nextLyricTime = calculatingTime(mins, secs, speed);
+            qDebug() << nextLyricTime;
+        }
+
     // lyrics end
     if (!(m_hmmio = mmioOpen(szPathName, NULL, MMIO_READ)))
     {
@@ -232,20 +239,24 @@ void playthread::playwave(){
             emit sliderUpdate((int)test);
         }
         time_temp = real_time;
-        if (nextLyricTime == (int)duration)
+        if(fp != NULL)
         {
-            nextLyricTime--;
-            qDebug() << line;
-            //update lyric;
-            emit upLyric(line);
-            fgets(timeBuff, 11, (FILE*)fp);
-            line = readLine(fp);
-            mins[0] = timeBuff[1];
-            mins[1] = timeBuff[2];
-            secs[0] = timeBuff[4];
-            secs[1] = timeBuff[5];
-            nextLyricTime = calculatingTime(mins, secs, speed);
+            if (nextLyricTime == (int)duration)
+            {
+                nextLyricTime--;
+                qDebug() << line;
+                //update lyric;
+                emit upLyric(line);
+                fgets(timeBuff, 11, (FILE*)fp);
+                line = readLine(fp);
+                mins[0] = timeBuff[1];
+                mins[1] = timeBuff[2];
+                secs[0] = timeBuff[4];
+                secs[1] = timeBuff[5];
+                nextLyricTime = calculatingTime(mins, secs, speed);
+            }
         }
+
         if(!this->Stop){
            break;
         }
