@@ -1,15 +1,20 @@
 #define _CRT_SECURE_NO_WARNINGS
 #undef UNICODE
+#pragma comment(lib, "ws2_32.lib")
+#define MY_PORT 3434
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib,"msacm32.lib")
-#include <iostream>
+#include <Winsock2.h>
 #include <Windows.h>
+#include <iostream>
 #include <mmsystem.h>
 #include <string>
 #include <fstream>
 #include <stdio.h>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "playthread.h"
 #include <QFileDialog>
 #include <QFile>
 #include <QFileInfo>
@@ -28,22 +33,28 @@ struct User : QObjectUserData {
     QString bandName;
     QString albumName;
 };
-
 Q_DECLARE_METATYPE(User)
+int count=0;//count terminal
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     setWindowTitle(tr("P2P Karaoke System"));
+    //connect(p,SIGNAL(play()),this,SLOT(onplay()));
+    m_thread=new playthread(this);
     /*
      REMEMBER TO CHANGE THE PATH FIRST
      */
-    QDir myPath("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/Music");
+
+    //QDir myPath("C:/Users/user/CSCI3280-PROJ/P2Psystem/Music");
+    QDir myPath("../P2Psystem/Music");
     myPath.setFilter(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
     myList = myPath.entryList();
     //ui->songL->addItems(myList);
 
-    QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/music_database.txt");
+
+    //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
+    QFile file("../P2Psystem/music_database.txt");
     if(!file.open(QIODevice::ReadOnly))
         QMessageBox::information(0,"database not found",file.errorString());
 
@@ -74,19 +85,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         */
     }
     file.close();
+}
 
-    /*
-    int nCount = ui->songL->count();
-    for(int i=0;i<nCount;i++){
-        QListWidgetItem *item = ui->songL->item(i);
-    }
-    QString lyric = this->getLyric(currentSongInfo.lyricLink);//get lyrics from web
-    lyricList = this->parse(lyric);//get lyrics sentence by sentence to lyricList
-    list->setBackgroundColor(Qt::red);
-
-    mPlayer = new QMediaPlayer(this);
-    connect(mPlayer, &QMediaPlayer::positionchanged, this, &MainWindow::on_positionChanged);
-    */
+void MainWindow::DoSetup(QThread &mainThread){
+    //connect(&mainThread,SIGNAL(started()),this,SLOT(on_playButton_clicked()));
 }
 
 MainWindow::~MainWindow()
@@ -104,11 +106,14 @@ void MainWindow::on_Add_clicked()
     QString tmp =filepath[filepath.size()-1];
     QStringList tmpList=tmp.split('.');
     tmpList.removeLast();
+    myList.append(tmpList[0]);
 
+    //copy the new song to music folder
     std::string song=tmp.toStdString().c_str();//Qstring to string
-    std::string newpath="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song;
+    //std::string newpath="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song;
+    std::string newpath="../P2Psystem/Music/"+song;
     QString qnewPath=QString::fromStdString(newpath.c_str());//string to Qstring
-    QFile::copy(path, qnewPath);//copy the new song to music folder
+    QFile::copy(path, qnewPath);
 
     QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
     pItem->setData(Qt::UserRole, path);
@@ -129,13 +134,18 @@ void MainWindow::on_Del_clicked()
     ui->songL->takeItem(row);
 }
 
+void MainWindow::onplay(){
+
+}
+
+
 void MainWindow::on_playButton_clicked()
 {
     //QList<QListWidgetItem *> itemList = ui->songL->selectedItems();
-    //int row= ui->songL->row(itemList[0]);
+    //int row= ui->songL->row(itemList[0]);f
     int exist=0;
     QString song = ui->songName->text();
-    std::string song1=song.toStdString().c_str();
+    //std::string song1=song.toStdString().c_str();
     for(int i=0;i<myList.size();i++){//check is the song exit
         if(song==myList[i]){
             break;
@@ -143,101 +153,20 @@ void MainWindow::on_playButton_clicked()
             exist=1;
         }
     }
-    std::string path="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song1+".wav";
+    //std::string path="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song1+".wav";
+    //std::string path="E:\\Alisa\\Yr4_Sem2\\CSCI3280 Multimedia\\project\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song1+".wav";
 
 
     if((ui->playButton->text() == "play") && (exist==0)){
-        //mPlayer -> play();
-        LPSTR szFileName;
-        LPTSTR szPathName;
-        MMCKINFO mmckinfoParent;
-        MMCKINFO mmckinfoSubChunk;
-        DWORD dwFmtSize;
-        DWORD m_WaveLong;
-        WAVEFORMATEX* lpFormat;
-        DWORD m_dwDataOffset;
-        DWORD m_dwDataSize;
-        WAVEOUTCAPS pwoc;
-        LONG lSoundOffset;
-
-        LONG lSoundLong;
-
-        //szFileName = (LPTSTR)filename;
-        szPathName = (LPTSTR)path.c_str();
-        float speed = 0.8;
-        HMMIO m_hmmio;
-        printf("%s\n", szPathName);
-        if (!(m_hmmio = mmioOpen(szPathName, NULL, MMIO_READ)))
-        {
-            printf("fail in mmioOpen\n");
-        }
-
-        mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E');
-        if (mmioDescend(m_hmmio, (LPMMCKINFO)& mmckinfoParent, NULL, MMIO_FINDRIFF))
-        {
-            printf("fail in mmioDescend:WAVE\n");
-        }
-        mmckinfoSubChunk.ckid = mmioFOURCC('f', 'm', 't', ' ');
-        if (mmioDescend(m_hmmio, &mmckinfoSubChunk, &mmckinfoParent,
-            MMIO_FINDCHUNK))
-        {
-            printf("fail in mmioDescend:fmt\n");
-        }
-
-        dwFmtSize = mmckinfoSubChunk.cksize;
-        lpFormat = (WAVEFORMATEX *)LocalLock(LocalAlloc(LMEM_MOVEABLE, LOWORD(dwFmtSize)));
-        if ((unsigned long)mmioRead(m_hmmio, (HPSTR)lpFormat, dwFmtSize) != dwFmtSize)
-        {
-            printf("fail in mmioRead\n");
-        }
-        mmioAscend(m_hmmio, &mmckinfoSubChunk, 0);
-        mmckinfoSubChunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
-        if (mmioDescend(m_hmmio, &mmckinfoSubChunk, &mmckinfoParent, MMIO_FINDCHUNK))
-        {
-            printf("fail in mmioDescend:data\n");
-        }
-        m_dwDataSize = mmckinfoSubChunk.cksize;
-        m_dwDataOffset = mmckinfoSubChunk.dwDataOffset;
-        if (m_dwDataSize == 0L)
-        {
-            printf("the file has no data!");
-        }
-
-        char* lpData = (char *)malloc(sizeof(char) * m_dwDataSize);
-        if (!lpData)
-        {
-            printf("Alloc memory for wave data failed!");
-        }
-
-
-        lSoundOffset = m_dwDataOffset;
-        LONG lSize = mmioSeek(m_hmmio, lSoundOffset, SEEK_SET);
-        int value;
-        if (mmioRead(m_hmmio, lpData, m_dwDataSize) != m_dwDataSize)
-        {
-            printf("something wrong in mmioRead\n");
-        }
-
-        HWAVEOUT hWaveOut;
-        lpFormat->nSamplesPerSec *= speed; // revise this variable for tuning the speed
-        waveOutOpen(&hWaveOut, WAVE_MAPPER, lpFormat, 0L, 0L, WAVE_FORMAT_DIRECT);
-
-        WAVEHDR WaveOutHdr;
-        WaveOutHdr.lpData = (LPSTR)lpData;
-        WaveOutHdr.dwBufferLength = m_dwDataSize;
-        WaveOutHdr.dwBytesRecorded = 0;
-        WaveOutHdr.dwUser = 0L;
-        WaveOutHdr.dwFlags = 0L;
-        WaveOutHdr.dwLoops = 0L;
-        waveOutPrepareHeader(hWaveOut, &WaveOutHdr, sizeof(WAVEHDR));
-        waveOutWrite(hWaveOut, &WaveOutHdr, sizeof(WAVEHDR));
-
-        do {} while (waveOutUnprepareHeader(hWaveOut, &WaveOutHdr, sizeof(WAVEHDR)) == WAVERR_STILLPLAYING);
-        waveOutClose(hWaveOut);
+        p =new playthread(this);
+        p->song=song;
+        p->Stop=true;
+        p->start();
         ui->playButton->setText("stop");
     } else {
         //mPlayer->stop();
         ui->playButton->setText("play");
+        p->Stop=false;
         std::cout << "the music is stop!" << endl;
     }
 }
@@ -258,7 +187,8 @@ void MainWindow::on_searchBar_textChanged(const QString &arg1)
 {
     QRegExp regExp(arg1, Qt::CaseInsensitive, QRegExp::Wildcard);
     ui->songL->clear();
-    QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
+    //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
+    QFile file("../P2Psystem/music_database.txt");
     if(!file.open(QIODevice::ReadOnly))
         QMessageBox::information(0,"database not found",file.errorString());
     QTextStream in(&file);
@@ -292,6 +222,7 @@ void MainWindow::on_songL_itemDoubleClicked(QListWidgetItem *item)
     ui->albumName->setText(item->data(Qt::UserRole + 3).toString());
 }
 
+<<<<<<< HEAD
 void MainWindow::on_Edit_clicked()
 {
     QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/music_database.txt");
@@ -321,3 +252,25 @@ void MainWindow::on_Edit_clicked()
         edit << editText;
     }
 }
+=======
+void MainWindow::on_connectButton_clicked()
+{
+    socket = new p2psocket(this);
+    socket->p2pconnect();//ui->IPaddr->text().toStdString().c_str();
+}
+
+void MainWindow::on_disButton_clicked()
+{
+    count=0;
+}
+
+void MainWindow::on_p2pButton_clicked()
+{
+    if(ui->p2pButton->text()=="P2P open"){
+        ui->p2pButton->setText("P2P close");
+    }else if(ui->p2pButton->text()=="P2P close"){
+        ui->p2pButton->setText("P2P open");
+    }
+}
+
+>>>>>>> 873d5a04c55bd1edb7fff7e4226a2c829882bfb5
