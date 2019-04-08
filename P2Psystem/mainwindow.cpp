@@ -51,7 +51,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     myPath.setFilter(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
     myList = myPath.entryList();
 
-
     //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
     QFile file("../P2Psystem/music_database.txt");
     if(!file.open(QIODevice::ReadOnly))
@@ -123,10 +122,10 @@ void MainWindow::on_Add_clicked()
     if(!file.open(QIODevice::ReadWrite))
         QMessageBox::information(0,"database not found",file.errorString());
     QTextStream edit(&file);
-    QString tobeAdd = "'"+ path +"', '"+ tmpList[0] +"', 'N/A', 'N/A'";
+    QString tobeAdd = "'"+ tmp +"', '"+ tmpList[0] +"', 'N/A', 'N/A'";
 
     file.seek(file.size());
-    edit << tobeAdd << endl;
+    edit << endl << tobeAdd;
 }
 
 void MainWindow::on_Del_clicked()
@@ -154,8 +153,15 @@ void MainWindow::on_Del_clicked()
         newPassage += file.readLine();
     }
     newPassage += remainText;
+    newPassage.chop(1);
     file.resize(0);
     edit << newPassage;
+
+    QString delPath = "../P2Psystem/Music/" + ui->songL->item(row)->data(Qt::UserRole).toString();
+    QTextStream debug(stdout);
+    debug << delPath;
+    QFile delFile(delPath);
+    delFile.remove();
 
     ui->songL->takeItem(row);
 }
