@@ -17,6 +17,8 @@ public:
 signals:
     void upLyric(const char *);
     void GetLength(QString);
+    void timeUpdate(unsigned int);
+    void sliderUpdate(unsigned int);
 
 public slots:
     void playwave();

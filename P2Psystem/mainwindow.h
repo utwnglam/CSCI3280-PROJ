@@ -29,13 +29,15 @@ public slots:
     void onplay();
     void onupLyric(const char *);
     void onGetLength(QString);
+    void ontimeUpdate(unsigned int);
+    void onsliderUpdate(unsigned int);
 
 private slots:
     void on_Add_clicked();
     void on_Del_clicked();
     void on_playButton_clicked();
 
-    void on_ProgressBar_sliderMoved(int position);
+    //void on_ProgressBar_sliderMoved(int position);
 
     void on_searchBar_textChanged(const QString &arg1);
 
@@ -50,6 +52,8 @@ private slots:
     void on_p2pButton_clicked();
 
     //play();
+
+    //void on_ProgressBar_actionTriggered(int action);
 
 private:
     Ui::MainWindow *ui;

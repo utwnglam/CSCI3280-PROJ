@@ -138,6 +138,25 @@ void MainWindow::onupLyric(const char * line){
     ui->lyrics->setText(QString::fromStdString(line));
 }
 
+void MainWindow::ontimeUpdate(unsigned int cur_time)
+{
+    int _mins = int(cur_time/60);
+    int _sec = int(cur_time%60);
+    QString cur_length;
+    if(_sec <10)
+        cur_length = QString::number(_mins) + ":0" + QString::number(_sec);
+    else
+        cur_length = QString::number(_mins) + ":" + QString::number(_sec);
+    qDebug() << "cur_length" << cur_length;
+    ui->timer->setText(cur_length);
+}
+
+void MainWindow::onsliderUpdate(unsigned int cur_pos)
+{
+    ui->ProgressBar->setValue(cur_pos);
+    qDebug() << "cur position" << cur_pos;
+}
+
 void MainWindow::onGetLength(QString leng)
 {
     qDebug() << "transfer length is" << leng;
@@ -164,6 +183,8 @@ void MainWindow::on_playButton_clicked()
     if((ui->playButton->text() == "play") && (exist==0)){
         p =new playthread(this);
         connect(p,SIGNAL(upLyric(const char*)),this,SLOT(onupLyric(const char*)));
+        connect(p, SIGNAL(timeUpdate(unsigned int)), this, SLOT(ontimeUpdate(unsigned int)));
+        connect(p, SIGNAL(sliderUpdate(unsigned int)), this, SLOT(onsliderUpdate(unsigned int)));
         ui->lyrics->setText("Lyrics");
         p->song=song;
         p->Stop=true;
@@ -185,10 +206,10 @@ char *c = byteArray.data();
 kernel->playMusic(c, 1.0);
 */
 
-void MainWindow::on_ProgressBar_sliderMoved(int position)
-{
-
-}
+//void MainWindow::on_ProgressBar_sliderMoved(int position)
+//{
+//
+//}
 
 void MainWindow::on_searchBar_textChanged(const QString &arg1)
 {
@@ -281,3 +302,8 @@ void MainWindow::on_p2pButton_clicked()
 }
 
 
+
+//void MainWindow::on_ProgressBar_actionTriggered(int action)
+//{
+//
+//}

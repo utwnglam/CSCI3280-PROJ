@@ -107,7 +107,7 @@ void playthread::playwave(){
 
     //szFileName = (LPTSTR)filename;
     szPathName = (LPTSTR)path.c_str();
-    float speed = 1.0;
+    float speed = 1.5;
     HMMIO m_hmmio;
     //printf("%s\n", szPathName);
     // lyrics start
@@ -220,23 +220,36 @@ void playthread::playwave(){
     //ui->timer->setText(current_sec/60 + ":" + current_sec%60);
     std::clock_t start;
     double duration;
+    int real_time;
+    int time_temp = 0;
+    double test;
     start = std::clock();
     do {
         duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
-                if (nextLyricTime == (int)duration)
-                {
-                    nextLyricTime--;
-                    qDebug() << line;
-                    emit upLyric(line);
-                    //ui->lyrics->setText(line);
-                    fgets(timeBuff, 11, (FILE*)fp);
-                    line = readLine(fp);
-                    mins[0] = timeBuff[1];
-                    mins[1] = timeBuff[2];
-                    secs[0] = timeBuff[4];
-                    secs[1] = timeBuff[5];
-                    nextLyricTime = calculatingTime(mins, secs, speed);
-                }
+        //update time and slider
+        real_time = int(duration)*speed;
+        if(real_time > time_temp)   // when it updates
+        {
+            emit timeUpdate(real_time);
+            test = ((double)real_time/(double)total_sec)*100;
+            qDebug() << real_time << "/" << total_sec << "*100= the slider pos" << QString::number(test, 'f', 2);
+            emit sliderUpdate((int)test);
+        }
+        time_temp = real_time;
+        if (nextLyricTime == (int)duration)
+        {
+            nextLyricTime--;
+            qDebug() << line;
+            //update lyric;
+            emit upLyric(line);
+            fgets(timeBuff, 11, (FILE*)fp);
+            line = readLine(fp);
+            mins[0] = timeBuff[1];
+            mins[1] = timeBuff[2];
+            secs[0] = timeBuff[4];
+            secs[1] = timeBuff[5];
+            nextLyricTime = calculatingTime(mins, secs, speed);
+        }
         if(!this->Stop){
            break;
         }
