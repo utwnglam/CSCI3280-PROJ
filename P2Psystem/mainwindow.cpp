@@ -158,6 +158,7 @@ void MainWindow::on_playButton_clicked()
     if((ui->playButton->text() == "play") && (exist==0)){
         p =new playthread(this);
         connect(p,SIGNAL(upLyric(const char*)),this,SLOT(onupLyric(const char*)));
+        ui->lyrics->setText("Lyrics");
         p->song=song;
         p->Stop=true;
         p->start();
