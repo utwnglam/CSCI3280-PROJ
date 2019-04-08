@@ -23,11 +23,11 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void DoSetup(QThread &mainThread);
     //playthread *p;
 
 public slots:
     void onplay();
+    void onupLyric(const char *);
 
 private slots:
     void on_Add_clicked();

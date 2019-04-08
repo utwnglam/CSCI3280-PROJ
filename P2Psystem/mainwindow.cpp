@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->setupUi(this);
     setWindowTitle(tr("P2P Karaoke System"));
     //connect(p,SIGNAL(play()),this,SLOT(onplay()));
-    m_thread=new playthread(this);
+    //m_thread=new playthread(this);
     /*
      REMEMBER TO CHANGE THE PATH FIRST
      */
@@ -83,10 +83,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         */
     }
     file.close();
-}
-
-void MainWindow::DoSetup(QThread &mainThread){
-    //connect(&mainThread,SIGNAL(started()),this,SLOT(on_playButton_clicked()));
 }
 
 MainWindow::~MainWindow()
@@ -136,6 +132,9 @@ void MainWindow::onplay(){
 
 }
 
+void MainWindow::onupLyric(const char * line){
+    ui->lyrics->setText(QString::fromStdString(line));
+}
 
 void MainWindow::on_playButton_clicked()
 {
@@ -154,9 +153,9 @@ void MainWindow::on_playButton_clicked()
     //std::string path="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song1+".wav";
     //std::string path="E:\\Alisa\\Yr4_Sem2\\CSCI3280 Multimedia\\project\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song1+".wav";
 
-
     if((ui->playButton->text() == "play") && (exist==0)){
         p =new playthread(this);
+        connect(p,SIGNAL(upLyric(const char*)),this,SLOT(onupLyric(const char*)));
         p->song=song;
         p->Stop=true;
         p->start();

@@ -107,7 +107,7 @@ void playthread::playwave(){
 
     //szFileName = (LPTSTR)filename;
     szPathName = (LPTSTR)path.c_str();
-    float speed = 3.0;
+    float speed = 1.0;
     HMMIO m_hmmio;
     //printf("%s\n", szPathName);
     // lyrics start
@@ -221,6 +221,7 @@ void playthread::playwave(){
                 {
                     nextLyricTime--;
                     qDebug() << line;
+                    emit upLyric(line);
                     //ui->lyrics->setText(line);
                     fgets(timeBuff, 11, (FILE*)fp);
                     line = readLine(fp);
@@ -237,3 +238,4 @@ void playthread::playwave(){
     waveOutReset(hWaveOut);
     waveOutClose(hWaveOut);
 }
+
