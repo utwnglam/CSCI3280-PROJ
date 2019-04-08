@@ -265,25 +265,26 @@ void MainWindow::on_searchBar_textChanged(const QString &arg1)
     if(!file.open(QIODevice::ReadOnly))
         QMessageBox::information(0,"database not found",file.errorString());
     QTextStream in(&file);
-    for(int i = 0; i< myList.filter(regExp).size();++i)
-    {
-        while(!(in.atEnd())){
-            QString line = in.readLine();
-            QStringList strlist = line.split('\'');
-            if(QString::compare(myList.filter(regExp)[i], strlist[3], Qt::CaseInsensitive)==0 ||
-                    QString::compare(myList.filter(regExp)[i], strlist[5], Qt::CaseInsensitive)==0||
-                    QString::compare(myList.filter(regExp)[i], strlist[7], Qt::CaseInsensitive)==0){
-                QString tmp = myList.filter(regExp).at(i);
-                QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
-                pItem->setData(Qt::UserRole, strlist[1]);
-                pItem->setData(Qt::UserRole + 1, tmp);
-                pItem->setData(Qt::UserRole + 2, strlist[5]);
-                pItem->setData(Qt::UserRole + 3, strlist[7]);
-                pItem->setText(tmp);
-                ui->songL->addItem(pItem);
-                break;
-            }
+
+    //mylist.filter(regExp) return list of strings that match the regular expression
+    for(int i = 0; i < myList.size(); i++) {
+        QString line = in.readLine();
+        QStringList strlist = line.split('\'');
+        QStringList forCompare = strlist;
+        forCompare.removeAt(1);
+        //remove ", "
+        forCompare.removeAt(2);forCompare.removeAt(4);forCompare.removeAt(6);
+
+        if (forCompare.filter(regExp).size() != 0) {
+            QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
+            pItem->setData(Qt::UserRole, strlist[1]);
+            pItem->setData(Qt::UserRole + 1, strlist[3]);
+            pItem->setData(Qt::UserRole + 2, strlist[5]);
+            pItem->setData(Qt::UserRole + 3, strlist[7]);
+            pItem->setText(strlist[3]);
+            ui->songL->addItem(pItem);
         }
+
     }
     file.close();
 }
