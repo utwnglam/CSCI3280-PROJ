@@ -108,7 +108,7 @@ void playthread::playwave(){
     //szFileName = (LPTSTR)filename;
     szPathName = (LPTSTR)path.c_str();
 
-    float speed = 2.0;
+    float speed = this->speed;
 
     HMMIO m_hmmio;
     //printf("%s\n", szPathName);
@@ -214,12 +214,6 @@ void playthread::playwave(){
     else
         length = QString::number(minutes)+":"+QString::number(sec);
     emit GetLength(length);
-    int slider_pos = 0;
-    //ui->ProgressBar->setValue(slider_pos);
-    //slider_pos = int(current_sec/total_sec) * 100; // update the slider position by current playing time
-    //update timer label
-    //ui->_length->setText(min + ":" + sec);
-    //ui->timer->setText(current_sec/60 + ":" + current_sec%60);
     std::clock_t start;
     double duration;
     int real_time;

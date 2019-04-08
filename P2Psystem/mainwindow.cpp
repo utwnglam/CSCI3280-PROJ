@@ -46,6 +46,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
      REMEMBER TO CHANGE THE PATH FIRST
      */
 
+    ui->speedDrop->addItem("x 0.5");
+    ui->speedDrop->addItem("x 1.0");
+    ui->speedDrop->addItem("x 1.5");
+    ui->speedDrop->addItem("x 1.75");
+    ui->speedDrop->addItem("x 2.0");
     //QDir myPath("C:/Users/user/CSCI3280-PROJ/P2Psystem/Music");
     QDir myPath("../P2Psystem/Music");
     myPath.setFilter(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
@@ -195,8 +200,22 @@ void MainWindow::onGetLength(QString leng)
 
 void MainWindow::on_playButton_clicked()
 {
+    float speed;
+    qDebug() << "the speed selected" << ui->speedDrop->currentIndex() << ui->speedDrop->currentText();
     //QList<QListWidgetItem *> itemList = ui->songL->selectedItems();
     //int row= ui->songL->row(itemList[0]);f
+    switch(ui->speedDrop->currentIndex()) {
+        case 0 : speed = 0.5; // prints "1"
+                 break;       // and exits the switch
+        case 1 : speed = 1.0;
+                 break;
+        case 2 : speed = 1.5;
+             break;
+        case 3 : speed = 1.75;
+             break;
+        case 4 : speed = 2.0;
+             break;
+    }
     int exist=0;
     QString song = ui->songName->text();
     //std::string song1=song.toStdString().c_str();
@@ -219,6 +238,8 @@ void MainWindow::on_playButton_clicked()
         p->song=song;
         p->Stop=true;
         p->start();
+        p->speed = speed;
+        qDebug() << "The speed" << QString::number(p->speed, 'f', 2);
         connect(p, SIGNAL(GetLength(QString)), this, SLOT(onGetLength(QString)));
         ui->playButton->setText("stop");
     } else {
