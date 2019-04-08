@@ -158,6 +158,7 @@ void MainWindow::on_playButton_clicked()
     if((ui->playButton->text() == "play") && (exist==0)){
         p =new playthread(this);
         connect(p,SIGNAL(upLyric(const char*)),this,SLOT(onupLyric(const char*)));
+        ui->lyrics->setText("Lyrics");
         p->song=song;
         p->Stop=true;
         p->start();
@@ -221,7 +222,7 @@ void MainWindow::on_songL_itemDoubleClicked(QListWidgetItem *item)
     ui->albumName->setText(item->data(Qt::UserRole + 3).toString());
 }
 
-<<<<<<< HEAD
+
 void MainWindow::on_Edit_clicked()
 {
     QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/music_database.txt");
@@ -251,7 +252,7 @@ void MainWindow::on_Edit_clicked()
         edit << editText;
     }
 }
-=======
+
 void MainWindow::on_connectButton_clicked()
 {
     socket = new p2psocket(this);
@@ -272,4 +273,4 @@ void MainWindow::on_p2pButton_clicked()
     }
 }
 
->>>>>>> 873d5a04c55bd1edb7fff7e4226a2c829882bfb5
+
