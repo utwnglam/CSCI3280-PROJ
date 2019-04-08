@@ -5,6 +5,10 @@
 #include <QDebug>
 //#include <QTcpServer>
 #include <QAbstractSocket>
+#include <QFile>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QDataStream>
 
 class p2psocket : public QObject
 {
@@ -26,6 +30,7 @@ public slots:
 
 private:
     QTcpSocket *socket;
+    QByteArray mydata;
     //QTcpServer *server;
 
 };

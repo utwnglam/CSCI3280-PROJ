@@ -44,7 +44,23 @@ void p2psocket::p2pconnect(){
 
 void p2psocket::connected(){
     qDebug()<<"Connected";
-    socket->write("this is p2psocket");
+    //socket->write("this is p2psocket");
+    //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\music_database2.txt");
+    QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\numb.wav");
+    file.open(QIODevice::ReadOnly);
+    mydata=file.readAll();
+
+    socket->write(mydata);
+    socket->waitForBytesWritten(3000);
+    //mydata.resize(0);
+    file.close();
+
+    //send wav:
+    //QFile file2("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\numb.wav");
+    //file2.open(QIODevice::ReadOnly);
+    //QByteArray mywav=file2.readAll();
+    //socket->write(mydata);
+    //file2.close();
 }
 
 void p2psocket::disconnected(){
@@ -56,6 +72,13 @@ void p2psocket::bytesWritten(qint64 bytes){
 }
 
 void p2psocket::readyRead(){
-    //qDebug()<<"Reading: "<<socket->bytesAvailable();
-    //qDebug()<<socket->readAll();
+    qDebug()<<"Reading: "<<socket->bytesAvailable();
+    qDebug()<<socket->readAll();
+
+    mydata=socket->readAll();
+    QFile file("C:\\Users\\user\\CSCI3280-PROJ\\database.txt"); // download path
+    file.open(QIODevice::WriteOnly);
+    file.write(mydata);
+    mydata.resize(0);
+    file.close();
 }

@@ -11,7 +11,7 @@ p2pThread::p2pThread(int ID, QObject *parent):QThread(parent)
         return;
     }
     connect(socketTh,SIGNAL(readyRead()),this,SLOT(readyRead()));
-    connect(socketTh,SIGNAL(sendString()),this,SLOT(sendString()));
+    //connect(socketTh,SIGNAL(sendString()),this,SLOT(sendString()));
     connect(socketTh,SIGNAL(disconnected()),this,SLOT(disconnected()));
 }
 
@@ -47,17 +47,18 @@ void p2pThread::sendString()  {
 
 void p2pThread::readyRead(){
 
-    QFile file("C:\\Users\\user\\CSCI3280-PROJ\\music_database2.txt");
-    file.open(QIODevice::ReadOnly);
-    QByteArray mydata=file.readAll();
     QByteArray Data=socketTh->readAll();
 
     qDebug()<<socketDescriptor<<"Data in: "<<Data;
-    qDebug()<<socketDescriptor<<"Data in: "<<mydata;
-    socketTh->write(mydata);
     socketTh->write(Data);
+    socketTh->waitForBytesWritten(6000);
+
+    //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\database2.txt"); // download path
+    QFile file("C:\\Users\\user\\CSCI3280-PROJ\\numb.wav");
+    file.open(QIODevice::WriteOnly);
+    file.write(Data);
+    file.close();
     Data.resize(0);
-    mydata.resize(0);
 }
 
 void p2pThread::disconnected(){
