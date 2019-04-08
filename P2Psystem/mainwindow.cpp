@@ -112,7 +112,7 @@ void MainWindow::on_Add_clicked()
     QFile::copy(path, qnewPath);
 
     QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
-    pItem->setData(Qt::UserRole, path);
+    pItem->setData(Qt::UserRole, tmp);
     pItem->setData(Qt::UserRole + 1, tmpList[0]);
     pItem->setData(Qt::UserRole + 2, "N/A");
     pItem->setData(Qt::UserRole + 3, "N/A");
