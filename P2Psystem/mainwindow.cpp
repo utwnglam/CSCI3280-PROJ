@@ -287,8 +287,19 @@ void MainWindow::on_songL_itemDoubleClicked(QListWidgetItem *item)
     ui->songName->setText(item->data(Qt::UserRole + 1).toString());
     ui->bandName->setText(item->data(Qt::UserRole + 2).toString());
     ui->albumName->setText(item->data(Qt::UserRole + 3).toString());
-}
+    QString album_picture = "../P2Psystem/images/" + ui->songName->text() + ".jpg";
+    QFile pic(album_picture);
+    if(pic.exists())
+    {
+        QPixmap pix(album_picture);
+        ui->albumpic->setPixmap(pix);
 
+    }
+    else
+    {
+        ui->albumpic->setText("Album picture is not available");
+    }
+}
 
 void MainWindow::on_Edit_clicked()
 {
