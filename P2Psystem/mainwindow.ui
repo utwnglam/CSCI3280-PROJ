@@ -277,10 +277,10 @@ background-repeat: none;
    <widget class="QLabel" name="_length">
     <property name="geometry">
      <rect>
-      <x>340</x>
+      <x>330</x>
       <y>310</y>
-      <width>31</width>
-      <height>16</height>
+      <width>41</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
@@ -369,7 +369,7 @@ background-repeat: none;
      <x>0</x>
      <y>0</y>
      <width>649</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

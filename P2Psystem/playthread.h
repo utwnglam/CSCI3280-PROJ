@@ -16,6 +16,7 @@ public:
     int calculatingTime(char min[], char sec[], double speed);
 signals:
     void upLyric(const char *);
+    void GetLength(QString);
 
 public slots:
     void playwave();

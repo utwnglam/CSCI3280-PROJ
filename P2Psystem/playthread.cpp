@@ -201,11 +201,17 @@ void playthread::playwave(){
     WaveOutHdr.dwLoops = 0L;
     waveOutPrepareHeader(hWaveOut, &WaveOutHdr, sizeof(WAVEHDR));
     waveOutWrite(hWaveOut, &WaveOutHdr, sizeof(WAVEHDR));
-    int min=0, sec=0, total_sec;
-    min = (int)(m_dwDataSize/lpFormat->nAvgBytesPerSec/60);
+    int minutes=0, sec=0, total_sec;
+    minutes = (int)(m_dwDataSize/lpFormat->nAvgBytesPerSec/60);
     sec = (int)(m_dwDataSize/lpFormat->nAvgBytesPerSec%60);
     total_sec = (int)(m_dwDataSize/lpFormat->nAvgBytesPerSec);
-    qDebug() << "the length of a song is" << m_dwDataSize <<"/" << lpFormat->nAvgBytesPerSec <<"is" << min << ":" << sec;
+    qDebug() << "the length of a song is" << m_dwDataSize <<"/" << lpFormat->nAvgBytesPerSec <<"is" << minutes << ":" << sec;
+    QString length;
+    if(sec < 10)    // add the zero
+        length = QString::number(minutes)+":0"+QString::number(sec);
+    else
+        length = QString::number(minutes)+":"+QString::number(sec);
+    emit GetLength(length);
     int slider_pos = 0;
     //ui->ProgressBar->setValue(slider_pos);
     //slider_pos = int(current_sec/total_sec) * 100; // update the slider position by current playing time

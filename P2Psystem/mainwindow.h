@@ -28,6 +28,7 @@ public:
 public slots:
     void onplay();
     void onupLyric(const char *);
+    void onGetLength(QString);
 
 private slots:
     void on_Add_clicked();
