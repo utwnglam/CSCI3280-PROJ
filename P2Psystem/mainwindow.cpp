@@ -47,14 +47,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     /*
      REMEMBER TO CHANGE THE PATH FIRST
      */
-    QDir myPath("C:/Users/user/CSCI3280-PROJ/P2Psystem/Music");
-    //QDir myPath("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music");
+    //QDir myPath("C:/Users/user/CSCI3280-PROJ/P2Psystem/Music");
+    QDir myPath("../P2Psystem/Music");
     myPath.setFilter(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
     myList = myPath.entryList();
     //ui->songL->addItems(myList);
 
     //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
-    QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
+    QFile file("../P2Psystem/music_database.txt");
     if(!file.open(QIODevice::ReadOnly))
         QMessageBox::information(0,"database not found",file.errorString());
 
@@ -128,7 +128,7 @@ void MainWindow::on_Add_clicked()
     //copy the new song to music folder
     std::string song=tmp.toStdString().c_str();//Qstring to string
     //std::string newpath="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song;
-    std::string newpath="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song;
+    std::string newpath="../P2Psystem/Music/"+song;
     QString qnewPath=QString::fromStdString(newpath.c_str());//string to Qstring
     QFile::copy(path, qnewPath);
 
@@ -204,8 +204,8 @@ void MainWindow::on_searchBar_textChanged(const QString &arg1)
 {
     QRegExp regExp(arg1, Qt::CaseInsensitive, QRegExp::Wildcard);
     ui->songL->clear();
-    QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
-    //QFile file("E:\\Alisa\\Yr4_Sem2\\CSCI3280 Multimedia\\project\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
+    //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
+    QFile file("../P2Psystem/music_database.txt");
     if(!file.open(QIODevice::ReadOnly))
         QMessageBox::information(0,"database not found",file.errorString());
     QTextStream in(&file);

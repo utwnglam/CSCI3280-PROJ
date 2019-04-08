@@ -40,7 +40,8 @@ void playthread::run(){
 
 void playthread::playwave(){
     std::string song1=this->song.toStdString().c_str();
-    std::string path="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song1+".wav";
+    //std::string path="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song1+".wav";
+    std::string path="../P2Psystem/Music/"+song1+".wav";
 
     LPSTR szFileName;
     LPTSTR szPathName;
