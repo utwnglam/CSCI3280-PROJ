@@ -9,6 +9,8 @@ server::server(QObject *parent):QTcpServer(parent)
     }else{
         qDebug()<<"Server builded";
     }*/
+    pool= new QThreadPool(this);
+    pool->setMaxThreadCount(6);
 }
 
 void server::newConnection(){

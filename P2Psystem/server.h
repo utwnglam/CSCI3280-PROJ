@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QDebug>
 #include <QTcpServer>
+#include <QThreadPool>
 #include "p2pthread.h"
 
 class server : public QTcpServer
@@ -24,6 +25,7 @@ protected:
 private:
     //QTcpSocket *socket;
     //QTcpServer *server;
+    QThreadPool *pool;
 
 
 };

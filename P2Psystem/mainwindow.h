@@ -9,6 +9,7 @@
 #include <QRegExp>
 #include <QTcpSocket>
 #include "p2psocket.h"
+#include "playthread.h"
 
 namespace Ui {
 class MainWindow;
@@ -22,6 +23,11 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void DoSetup(QThread &mainThread);
+    //playthread *p;
+
+public slots:
+    void onplay();
 
 private slots:
     void on_Add_clicked();
@@ -36,15 +42,17 @@ private slots:
 
     //void on_ProgressBar_valueChanged(int value);
     void on_connectButton_clicked();
-
     void on_disButton_clicked();
-
     void on_p2pButton_clicked();
+
+    //play();
 
 private:
     Ui::MainWindow *ui;
     QStringList myList;
     p2psocket *socket;
+    playthread *m_thread;
+    playthread *p;
 };
 
 #endif // MAINWINDOW_H
