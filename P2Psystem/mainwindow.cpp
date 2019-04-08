@@ -128,6 +128,7 @@ void MainWindow::on_Add_clicked()
 
     file.seek(file.size());
     edit << endl << tobeAdd;
+    file.close();
 }
 
 void MainWindow::on_Del_clicked()
@@ -166,6 +167,7 @@ void MainWindow::on_Del_clicked()
     delFile.remove();
 
     ui->songL->takeItem(row);
+    file.close();
 }
 
 void MainWindow::onplay(){
@@ -374,6 +376,7 @@ void MainWindow::on_Edit_clicked()
         ui->songL->item(row)->setData(Qt::UserRole + 3, ui->albumEdit->text());
         ui->albumName->setText(ui->albumEdit->text());
     }
+    file.close();
 }
 
 void MainWindow::on_connectButton_clicked()
