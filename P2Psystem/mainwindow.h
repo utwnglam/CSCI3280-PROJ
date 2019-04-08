@@ -7,8 +7,8 @@
 #include <QDir>
 #include <QDebug>
 #include <QRegExp>
-
-//#include "./playWave.hpp"
+#include <QTcpSocket>
+#include "p2psocket.h"
 
 namespace Ui {
 class MainWindow;
@@ -35,10 +35,16 @@ private slots:
     void on_songL_itemDoubleClicked(QListWidgetItem *item);
 
     //void on_ProgressBar_valueChanged(int value);
+    void on_connectButton_clicked();
+
+    void on_disButton_clicked();
+
+    void on_p2pButton_clicked();
 
 private:
     Ui::MainWindow *ui;
     QStringList myList;
+    p2psocket *socket;
 };
 
 #endif // MAINWINDOW_H

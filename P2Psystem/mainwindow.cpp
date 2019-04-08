@@ -1,13 +1,17 @@
 #define _CRT_SECURE_NO_WARNINGS
 #undef UNICODE
+#pragma comment(lib, "ws2_32.lib")
+#define MY_PORT 3434
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib,"msacm32.lib")
-#include <iostream>
+#include <Winsock2.h>
 #include <Windows.h>
+#include <iostream>
 #include <mmsystem.h>
 #include <string>
 #include <fstream>
 #include <stdio.h>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QFileDialog>
@@ -28,8 +32,9 @@ struct User : QObjectUserData {
     QString bandName;
     QString albumName;
 };
-
 Q_DECLARE_METATYPE(User)
+typedef std::map<std::string,std::string> settings_t;
+int count=0;//count terminal
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -38,14 +43,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     /*
      REMEMBER TO CHANGE THE PATH FIRST
      */
-    //QDir myPath("C:/Users/user/CSCI3280-PROJ/P2Psystem/Music");
-    QDir myPath("E:\\Alisa\\Yr4_Sem2\\CSCI3280 Multimedia\\project\\CSCI3280-PROJ\\P2Psystem\\Music");
+    QDir myPath("C:/Users/user/CSCI3280-PROJ/P2Psystem/Music");
+    //QDir myPath("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music");
     myPath.setFilter(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
     myList = myPath.entryList();
     //ui->songL->addItems(myList);
 
     //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
-    QFile file("E:\\Alisa\\Yr4_Sem2\\CSCI3280 Multimedia\\project\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
+    QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
     if(!file.open(QIODevice::ReadOnly))
         QMessageBox::information(0,"database not found",file.errorString());
 
@@ -107,11 +112,12 @@ void MainWindow::on_Add_clicked()
     QStringList tmpList=tmp.split('.');
     tmpList.removeLast();
 
+    //copy the new song to music folder
     std::string song=tmp.toStdString().c_str();//Qstring to string
     //std::string newpath="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song;
-    std::string newpath="E:\\Alisa\\Yr4_Sem2\\CSCI3280 Multimedia\\project\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song;
+    std::string newpath="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song;
     QString qnewPath=QString::fromStdString(newpath.c_str());//string to Qstring
-    QFile::copy(path, qnewPath);//copy the new song to music folder
+    QFile::copy(path, qnewPath);
 
     QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
     pItem->setData(Qt::UserRole, path);
@@ -146,8 +152,8 @@ void MainWindow::on_playButton_clicked()
             exist=1;
         }
     }
-    //std::string path="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song1+".wav";
-    std::string path="E:\\Alisa\\Yr4_Sem2\\CSCI3280 Multimedia\\project\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song1+".wav";
+    std::string path="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song1+".wav";
+    //std::string path="E:\\Alisa\\Yr4_Sem2\\CSCI3280 Multimedia\\project\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song1+".wav";
 
 
     if((ui->playButton->text() == "play") && (exist==0)){
@@ -272,8 +278,8 @@ void MainWindow::on_searchBar_textChanged(const QString &arg1)
 {
     QRegExp regExp(arg1, Qt::CaseInsensitive, QRegExp::Wildcard);
     ui->songL->clear();
-    //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
-    QFile file("E:\\Alisa\\Yr4_Sem2\\CSCI3280 Multimedia\\project\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
+    QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
+    //QFile file("E:\\Alisa\\Yr4_Sem2\\CSCI3280 Multimedia\\project\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
     if(!file.open(QIODevice::ReadOnly))
         QMessageBox::information(0,"database not found",file.errorString());
     QTextStream in(&file);
@@ -306,3 +312,91 @@ void MainWindow::on_songL_itemDoubleClicked(QListWidgetItem *item)
     ui->bandName->setText(item->data(Qt::UserRole + 2).toString());
     ui->albumName->setText(item->data(Qt::UserRole + 3).toString());
 }
+
+void MainWindow::on_connectButton_clicked()
+{
+    socket = new p2psocket(this);
+    socket->p2pconnect();//ui->IPaddr->text().toStdString().c_str()
+
+    /*WSADATA wsaData;
+    if ( WSAStartup (MAKEWORD(2,2), &wsaData)!=0)
+       QMessageBox::information(NULL,"network function call fails!","WSAGetLastError");
+            //WSAGetLastError()
+
+    SOCKADDR_IN remote_addr;
+    remote_addr.sin_family = AF_INET;
+    remote_addr.sin_port = htons(MY_PORT);
+    remote_addr.sin_addr.S_un.S_addr = inet_addr(ui->IPaddr->text().toStdString().c_str());
+
+    //Connect server:
+    SOCKET conn_sock =socket(AF_INET,SOCK_STREAM,0);
+    if(!(conn_sock)){
+        QMessageBox::information(NULL,"socket creation call fails!","INVALID_SOCKET" );
+        //return INVALID_SOCKET;
+    }
+    ::connect(conn_sock, (struct sockaddr *)&remote_addr, sizeof(SOCKADDR_IN));
+
+    int bytes_recvd;
+    char recvBuf[100];
+    bytes_recvd = recv(conn_sock, recvBuf, sizeof(recvBuf),0);
+    char *buffer =(char*)"Wellcome to PSPsystem!\0";
+    send(conn_sock, buffer, sizeof(buffer), 0);
+
+    //Wait connection request:
+    //int listen(SOCKET socket, int backlog);//backlog:The maximum length of the queue of pending connections to accept
+    //Accepting connection:
+    //SOCKET accept (SOCKET s, struct sockaddr *addr,  int *len);//addr:set NULL if dun wait it
+    //Receive /Send data(stream)
+    //int recv(SOCKET s, const char *but, int len, int flags);
+    //int send(SOCKET s, const char *but, int len, int flags);
+    //int recvfrom(SOCKET s, char *buf, int len, int flags, sockaddr *from, int *fromlen) ;
+    //int sendto(SOCKET s, const char *buf, int len, int flags, const sockaddr *to, int tolen) ;
+
+    //Close socket
+    count++;
+    ui->terCount->setText(QString::number(count));
+    closesocket(conn_sock);
+    WSACleanup();*/
+
+}
+
+void MainWindow::on_disButton_clicked()
+{
+    count=0;
+}
+
+void MainWindow::on_p2pButton_clicked()
+{
+    if(ui->p2pButton->text()=="P2P open"){
+
+       /* WSADATA wsaData;
+        if ( WSAStartup (MAKEWORD(2,2), &wsaData)!=0)
+           QMessageBox::information(NULL,"network function call fails!","WSAGetLastError");
+
+       SOCKADDR_IN my_addr;
+       my_addr.sin_family = AF_INET;
+       my_addr.sin_port = htons(MY_PORT);
+       int ip;
+       my_addr.sin_addr.S_un.S_addr = htonl((u_long)get_local_ip(ip));
+
+       SOCKET listen_sock = socket(AF_INET, SOCK_STREAM, 0);
+       bind(listen_sock, (struct sockaddr *) &my_addr, sizeof(SOCKADDR_IN));
+       listen(listen_sock, SOMAXCONN);
+
+       int dummy;
+       char *buffer =(char*)"Wellcome to P2Psystem\0";
+       SOCKET new_sock = accept(listen_sock, NULL, &dummy);
+       send(new_sock, buffer, sizeof(buffer), 0);
+       char recvBuf[100];
+       memset(recvBuf, 0, sizeof(recvBuf));
+       recv(new_sock, recvBuf, sizeof(recvBuf), 0);
+
+        closesocket(new_sock);
+        closesocket(listen_sock);
+        WSACleanup();*/
+        ui->p2pButton->setText("P2P close");
+    }else if(ui->p2pButton->text()=="P2P close"){
+        ui->p2pButton->setText("P2P open");
+    }
+}
+
