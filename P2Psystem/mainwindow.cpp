@@ -26,6 +26,8 @@
 #include <QtGui>
 #include <QtCore>
 #include <QStringList>
+#include <QMediaPlayer>
+#include <QvideoWidget>
 
 struct User : QObjectUserData {
     QString pathName;
@@ -401,3 +403,25 @@ void MainWindow::on_p2pButton_clicked()
 //
 //}
 
+
+void MainWindow::on_pushButton_clicked()
+{
+
+    QMediaPlayer* player = new QMediaPlayer;
+    QVideoWidget* vw = new QVideoWidget;
+
+    player->setVideoOutput(vw);
+    player->setMedia(QUrl::fromLocalFile("C:/Users/adam9/Desktop/Nishino.mp4"));
+    vw->setGeometry(100,100,300,400);
+    vw->show();
+
+    player->play();
+
+
+/*
+    QMediaPlayer *player = new QMediaPlayer;
+    player->setMedia(QUrl::fromLocalFile("Users/adam9/Desktop/Nishino.mp4"));
+    player->setVolume(10);
+    player->play();
+    */
+}
