@@ -38,12 +38,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     /*
      REMEMBER TO CHANGE THE PATH FIRST
      */
-    QDir myPath("C:/Users/user/CSCI3280-PROJ/P2Psystem/Music");
+    QDir myPath("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/Music");
     myPath.setFilter(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
     myList = myPath.entryList();
     //ui->songL->addItems(myList);
 
-    QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
+    QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/music_database.txt");
     if(!file.open(QIODevice::ReadOnly))
         QMessageBox::information(0,"database not found",file.errorString());
 
@@ -290,4 +290,34 @@ void MainWindow::on_songL_itemDoubleClicked(QListWidgetItem *item)
     ui->songName->setText(item->data(Qt::UserRole + 1).toString());
     ui->bandName->setText(item->data(Qt::UserRole + 2).toString());
     ui->albumName->setText(item->data(Qt::UserRole + 3).toString());
+}
+
+void MainWindow::on_Edit_clicked()
+{
+    QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/music_database.txt");
+    if(!file.open(QIODevice::ReadWrite))
+        QMessageBox::information(0,"database not found",file.errorString());
+    QTextStream edit(&file);
+
+    //change singer name
+    if(ui->singerEdit->text() != NULL){
+        QString editText = edit.readAll();
+        QRegularExpression re(ui->bandName->text());
+        QString replacementText(ui->singerEdit->text());
+        editText.replace(re, replacementText);
+
+        file.resize(0);
+        edit << editText;
+    }
+
+    //change album name
+    if(ui->albumEdit->text() != NULL){
+        QString editText = edit.readAll();
+        QRegularExpression re(ui->albumName->text());
+        QString replacementText(ui->albumEdit->text());
+        editText.replace(re, replacementText);
+
+        file.resize(0);
+        edit << editText;
+    }
 }
