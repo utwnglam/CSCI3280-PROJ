@@ -23,11 +23,11 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void DoSetup(QThread &mainThread);
     //playthread *p;
 
 public slots:
     void onplay();
+    void onupLyric(const char *);
 
 private slots:
     void on_Add_clicked();
@@ -39,6 +39,9 @@ private slots:
     void on_searchBar_textChanged(const QString &arg1);
 
     void on_songL_itemDoubleClicked(QListWidgetItem *item);
+
+
+    void on_Edit_clicked();
 
     //void on_ProgressBar_valueChanged(int value);
     void on_connectButton_clicked();

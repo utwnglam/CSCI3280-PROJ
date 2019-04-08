@@ -221,6 +221,7 @@ void playthread::playwave(){
                 {
                     nextLyricTime--;
                     qDebug() << line;
+                    emit upLyric(line);
                     //ui->lyrics->setText(line);
                     fgets(timeBuff, 11, (FILE*)fp);
                     line = readLine(fp);
@@ -237,3 +238,4 @@ void playthread::playwave(){
     waveOutReset(hWaveOut);
     waveOutClose(hWaveOut);
 }
+

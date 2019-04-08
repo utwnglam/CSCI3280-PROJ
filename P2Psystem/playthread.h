@@ -15,7 +15,7 @@ public:
     const char *readLine(FILE *file);
     int calculatingTime(char min[], char sec[], double speed);
 signals:
-    void play();
+    void upLyric(const char *);
 
 public slots:
     void playwave();
