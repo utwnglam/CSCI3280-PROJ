@@ -59,49 +59,20 @@ background-repeat: none;
       <height>32</height>
      </size>
     </property>
-    <property name="autoRepeat">
+    <property name="checkable">
      <bool>true</bool>
     </property>
-   </widget>
-   <widget class="QLabel" name="songName">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>20</y>
-      <width>231</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Song</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="bandName">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>40</y>
-      <width>91</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>bandName</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
+    <property name="autoRepeat">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QLabel" name="lyrics">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>90</y>
+      <y>280</y>
       <width>401</width>
-      <height>331</height>
+      <height>141</height>
      </rect>
     </property>
     <property name="text">
@@ -110,33 +81,17 @@ background-repeat: none;
     <property name="alignment">
      <set>Qt::AlignCenter</set>
     </property>
-   </widget>
-   <widget class="QLabel" name="albumName">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>50</y>
-      <width>211</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>album</string>
-    </property>
-    <property name="scaledContents">
-     <bool>false</bool>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
+    <property name="wordWrap">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
       <x>450</x>
-      <y>80</y>
+      <y>190</y>
       <width>241</width>
-      <height>351</height>
+      <height>241</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -195,34 +150,6 @@ background-repeat: none;
      </item>
     </layout>
    </widget>
-   <widget class="QSlider" name="ProgressBar">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>440</y>
-      <width>291</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="maximum">
-     <number>100</number>
-    </property>
-    <property name="value">
-     <number>0</number>
-    </property>
-    <property name="sliderPosition">
-     <number>0</number>
-    </property>
-    <property name="tracking">
-     <bool>true</bool>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-    <property name="tickPosition">
-     <enum>QSlider::NoTicks</enum>
-    </property>
-   </widget>
    <widget class="QWidget" name="formLayoutWidget_2">
     <property name="geometry">
      <rect>
@@ -280,53 +207,11 @@ background-repeat: none;
      <string>Edit</string>
     </property>
    </widget>
-   <widget class="QLabel" name="_length">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>440</y>
-      <width>41</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>00:00</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="timer">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>440</y>
-      <width>41</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>00:00</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="IPaddr">
-    <property name="geometry">
-     <rect>
-      <x>450</x>
-      <y>20</y>
-      <width>41</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QPushButton" name="connectButton">
     <property name="geometry">
      <rect>
       <x>540</x>
-      <y>50</y>
+      <y>160</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -339,7 +224,7 @@ background-repeat: none;
     <property name="geometry">
      <rect>
       <x>620</x>
-      <y>50</y>
+      <y>160</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -352,7 +237,7 @@ background-repeat: none;
     <property name="geometry">
      <rect>
       <x>440</x>
-      <y>50</y>
+      <y>160</y>
       <width>93</width>
       <height>21</height>
      </rect>
@@ -361,18 +246,73 @@ background-repeat: none;
      <string>P2P open</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
+   <widget class="QSplitter" name="splitter_2">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>20</y>
-      <width>51</width>
-      <height>20</height>
+      <x>460</x>
+      <y>130</y>
+      <width>201</width>
+      <height>22</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Port(self):</string>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
     </property>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>IP:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="IPaddr"/>
+   </widget>
+   <widget class="QSplitter" name="splitter_3">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>440</y>
+      <width>411</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+    <widget class="QLabel" name="timer">
+     <property name="text">
+      <string>00:00</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QSlider" name="ProgressBar">
+     <property name="maximum">
+      <number>100</number>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+     <property name="sliderPosition">
+      <number>0</number>
+     </property>
+     <property name="tracking">
+      <bool>true</bool>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="tickPosition">
+      <enum>QSlider::NoTicks</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="_length">
+     <property name="text">
+      <string>00:00</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
@@ -406,51 +346,76 @@ background-repeat: none;
      </item>
     </layout>
    </widget>
-   <widget class="QLineEdit" name="IPaddr_2">
+   <widget class="QGraphicsView" name="graphicsView">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>20</y>
-      <width>41</width>
-      <height>22</height>
+      <x>-200</x>
+      <y>630</y>
+      <width>256</width>
+      <height>192</height>
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="label_4">
+   <widget class="QLabel" name="albumpic">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>20</y>
-      <width>31</width>
-      <height>20</height>
+      <x>220</x>
+      <y>40</y>
+      <width>171</width>
+      <height>171</height>
      </rect>
     </property>
     <property name="text">
-     <string>Port2:</string>
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="label_5">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>20</y>
-      <width>31</width>
-      <height>20</height>
+      <x>30</x>
+      <y>60</y>
+      <width>131</width>
+      <height>121</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Port3:</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="IPaddr_3">
-    <property name="geometry">
-     <rect>
-      <x>630</x>
-      <y>20</y>
-      <width>41</width>
-      <height>22</height>
-     </rect>
-    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QLabel" name="songName">
+       <property name="text">
+        <string>Song</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="albumName">
+       <property name="text">
+        <string>album</string>
+       </property>
+       <property name="scaledContents">
+        <bool>false</bool>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="bandName">
+       <property name="text">
+        <string>bandName</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -459,7 +424,7 @@ background-repeat: none;
      <x>0</x>
      <y>0</y>
      <width>712</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

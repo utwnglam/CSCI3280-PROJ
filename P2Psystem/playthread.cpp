@@ -108,36 +108,43 @@ void playthread::playwave(){
     //szFileName = (LPTSTR)filename;
     szPathName = (LPTSTR)path.c_str();
 
-    float speed = 2.0;
+    float speed = this->speed;
 
     HMMIO m_hmmio;
     //printf("%s\n", szPathName);
     // lyrics start
     const char* lyricPath = pathLyric.c_str();
+    char mins[3];
+    char secs[3];
+    char timeBuff[12];
+    int nextLyricTime;
+    const char *line;
         FILE * fp = fopen(lyricPath, "r");
         if (fp == NULL)
         {
             qDebug() <<"Error while opening the file.\n";
         }
-        char mins[3];
-        char secs[3];
-        char timeBuff[12];
-        fgets(timeBuff, 11, (FILE*)fp);
-        const char *line = readLine(fp);
-        int nextLyricTime;
-        mins[0] = timeBuff[1];
-        mins[1] = timeBuff[2];
-        mins[2] = 0;
-        secs[0] = timeBuff[4];
-        secs[1] = timeBuff[5];
-        secs[2] = 0;
-        qDebug() << mins[0];
-        qDebug() << mins[1];
-        qDebug() << secs[0];
-        qDebug() << secs[1];
+        else
+        {
 
-        nextLyricTime = calculatingTime(mins, secs, speed);
-        qDebug() << nextLyricTime;
+            fgets(timeBuff, 11, (FILE*)fp);
+            line = readLine(fp);
+
+            mins[0] = timeBuff[1];
+            mins[1] = timeBuff[2];
+            mins[2] = 0;
+            secs[0] = timeBuff[4];
+            secs[1] = timeBuff[5];
+            secs[2] = 0;
+            qDebug() << mins[0];
+            qDebug() << mins[1];
+            qDebug() << secs[0];
+            qDebug() << secs[1];
+
+            nextLyricTime = calculatingTime(mins, secs, speed);
+            qDebug() << nextLyricTime;
+        }
+
     // lyrics end
     if (!(m_hmmio = mmioOpen(szPathName, NULL, MMIO_READ)))
     {
@@ -214,12 +221,6 @@ void playthread::playwave(){
     else
         length = QString::number(minutes)+":"+QString::number(sec);
     emit GetLength(length);
-    int slider_pos = 0;
-    //ui->ProgressBar->setValue(slider_pos);
-    //slider_pos = int(current_sec/total_sec) * 100; // update the slider position by current playing time
-    //update timer label
-    //ui->_length->setText(min + ":" + sec);
-    //ui->timer->setText(current_sec/60 + ":" + current_sec%60);
     std::clock_t start;
     double duration;
     int real_time;
@@ -234,24 +235,28 @@ void playthread::playwave(){
         {
             emit timeUpdate(real_time);
             test = ((double)real_time/(double)total_sec)*100;
-            qDebug() << real_time << "/" << total_sec << "*100= the slider pos" << QString::number(test, 'f', 2);
+            //qDebug() << real_time << "/" << total_sec << "*100= the slider pos" << QString::number(test, 'f', 2);
             emit sliderUpdate((int)test);
         }
         time_temp = real_time;
-        if (nextLyricTime == (int)duration)
+        if(fp != NULL)
         {
-            nextLyricTime--;
-            qDebug() << line;
-            //update lyric;
-            emit upLyric(line);
-            fgets(timeBuff, 11, (FILE*)fp);
-            line = readLine(fp);
-            mins[0] = timeBuff[1];
-            mins[1] = timeBuff[2];
-            secs[0] = timeBuff[4];
-            secs[1] = timeBuff[5];
-            nextLyricTime = calculatingTime(mins, secs, speed);
+            if (nextLyricTime == (int)duration)
+            {
+                nextLyricTime--;
+                qDebug() << line;
+                //update lyric;
+                emit upLyric(line);
+                fgets(timeBuff, 11, (FILE*)fp);
+                line = readLine(fp);
+                mins[0] = timeBuff[1];
+                mins[1] = timeBuff[2];
+                secs[0] = timeBuff[4];
+                secs[1] = timeBuff[5];
+                nextLyricTime = calculatingTime(mins, secs, speed);
+            }
         }
+
         if(!this->Stop){
            break;
         }

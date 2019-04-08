@@ -45,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     /*
      REMEMBER TO CHANGE THE PATH FIRST
      */
-
+    ui->speedControl->setValue(1.0);
     //QDir myPath("C:/Users/user/CSCI3280-PROJ/P2Psystem/Music");
     QDir myPath("../P2Psystem/Music");
     myPath.setFilter(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
@@ -184,19 +184,19 @@ void MainWindow::ontimeUpdate(unsigned int cur_time)
 void MainWindow::onsliderUpdate(unsigned int cur_pos)
 {
     ui->ProgressBar->setValue(cur_pos);
-    qDebug() << "cur position" << cur_pos;
 }
 
 void MainWindow::onGetLength(QString leng)
 {
-    qDebug() << "transfer length is" << leng;
     ui->_length->setText(leng);
 }
 
 void MainWindow::on_playButton_clicked()
 {
+    float speed;
     //QList<QListWidgetItem *> itemList = ui->songL->selectedItems();
     //int row= ui->songL->row(itemList[0]);f
+    speed = (float)ui->speedControl->value();
     int exist=0;
     QString song = ui->songName->text();
     //std::string song1=song.toStdString().c_str();
@@ -219,10 +219,20 @@ void MainWindow::on_playButton_clicked()
         p->song=song;
         p->Stop=true;
         p->start();
+        p->speed = speed;
+        qDebug() << "The speed" << QString::number(p->speed, 'f', 2);
         connect(p, SIGNAL(GetLength(QString)), this, SLOT(onGetLength(QString)));
         ui->playButton->setText("stop");
+        QIcon ico;
+        ico.addPixmap(QPixmap("../P2Psystem/images/stop.png"),QIcon::Normal,QIcon::On);
+        ui->playButton->setIcon(ico);
+        ui->playButton->setCheckable(true);
     } else {
         ui->playButton->setText("play");
+        QIcon ico;
+        ico.addPixmap(QPixmap("../P2Psystem/images/play.png"),QIcon::Normal,QIcon::On);
+        ui->playButton->setIcon(ico);
+        ui->playButton->setCheckable(true);
         p->Stop=false;
         std::cout << "the music is stop!" << endl;
     }
@@ -277,8 +287,19 @@ void MainWindow::on_songL_itemDoubleClicked(QListWidgetItem *item)
     ui->songName->setText(item->data(Qt::UserRole + 1).toString());
     ui->bandName->setText(item->data(Qt::UserRole + 2).toString());
     ui->albumName->setText(item->data(Qt::UserRole + 3).toString());
-}
+    QString album_picture = "../P2Psystem/images/" + ui->songName->text() + ".jpg";
+    QFile pic(album_picture);
+    if(pic.exists())
+    {
+        QPixmap pix(album_picture);
+        ui->albumpic->setPixmap(pix);
 
+    }
+    else
+    {
+        ui->albumpic->setText("Album picture is not available");
+    }
+}
 
 void MainWindow::on_Edit_clicked()
 {
