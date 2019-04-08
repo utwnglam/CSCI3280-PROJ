@@ -44,7 +44,7 @@ void p2psocket::p2pconnect(){
 
 void p2psocket::connected(){
     qDebug()<<"Connected";
-    socket->write("hi");
+    socket->write("this is p2psocket");
 }
 
 void p2psocket::disconnected(){
@@ -56,6 +56,6 @@ void p2psocket::bytesWritten(qint64 bytes){
 }
 
 void p2psocket::readyRead(){
-    qDebug()<<"Reading: "<<socket->bytesAvailable();
-    qDebug()<<socket->readAll();
+    //qDebug()<<"Reading: "<<socket->bytesAvailable();
+    //qDebug()<<socket->readAll();
 }

@@ -23,8 +23,9 @@ protected:
     void incomingConnection( qintptr socketDescriptor);
 
 private:
-    //QTcpSocket *socket;
+    QTcpSocket *socket;
     //QTcpServer *server;
+    p2pThread *mthread;
     QThreadPool *pool;
 
 
