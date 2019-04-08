@@ -138,6 +138,12 @@ void MainWindow::onupLyric(const char * line){
     ui->lyrics->setText(QString::fromStdString(line));
 }
 
+void MainWindow::onGetLength(QString leng)
+{
+    qDebug() << "transfer length is" << leng;
+    ui->_length->setText(leng);
+}
+
 void MainWindow::on_playButton_clicked()
 {
     //QList<QListWidgetItem *> itemList = ui->songL->selectedItems();
@@ -162,6 +168,7 @@ void MainWindow::on_playButton_clicked()
         p->song=song;
         p->Stop=true;
         p->start();
+        connect(p, SIGNAL(GetLength(QString)), this, SLOT(onGetLength(QString)));
         ui->playButton->setText("stop");
     } else {
         //mPlayer->stop();
