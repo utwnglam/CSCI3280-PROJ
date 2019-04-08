@@ -40,6 +40,9 @@ private slots:
 
     void on_songL_itemDoubleClicked(QListWidgetItem *item);
 
+
+    void on_Edit_clicked();
+
     //void on_ProgressBar_valueChanged(int value);
     void on_connectButton_clicked();
     void on_disButton_clicked();

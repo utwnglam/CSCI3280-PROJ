@@ -45,11 +45,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     /*
      REMEMBER TO CHANGE THE PATH FIRST
      */
+
     //QDir myPath("C:/Users/user/CSCI3280-PROJ/P2Psystem/Music");
     QDir myPath("../P2Psystem/Music");
     myPath.setFilter(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
     myList = myPath.entryList();
     //ui->songL->addItems(myList);
+
 
     //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
     QFile file("../P2Psystem/music_database.txt");
@@ -219,6 +221,37 @@ void MainWindow::on_songL_itemDoubleClicked(QListWidgetItem *item)
     ui->albumName->setText(item->data(Qt::UserRole + 3).toString());
 }
 
+<<<<<<< HEAD
+void MainWindow::on_Edit_clicked()
+{
+    QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/music_database.txt");
+    if(!file.open(QIODevice::ReadWrite))
+        QMessageBox::information(0,"database not found",file.errorString());
+    QTextStream edit(&file);
+
+    //change singer name
+    if(ui->singerEdit->text() != NULL){
+        QString editText = edit.readAll();
+        QRegularExpression re(ui->bandName->text());
+        QString replacementText(ui->singerEdit->text());
+        editText.replace(re, replacementText);
+
+        file.resize(0);
+        edit << editText;
+    }
+
+    //change album name
+    if(ui->albumEdit->text() != NULL){
+        QString editText = edit.readAll();
+        QRegularExpression re(ui->albumName->text());
+        QString replacementText(ui->albumEdit->text());
+        editText.replace(re, replacementText);
+
+        file.resize(0);
+        edit << editText;
+    }
+}
+=======
 void MainWindow::on_connectButton_clicked()
 {
     socket = new p2psocket(this);
@@ -239,3 +272,4 @@ void MainWindow::on_p2pButton_clicked()
     }
 }
 
+>>>>>>> 873d5a04c55bd1edb7fff7e4226a2c829882bfb5
