@@ -21,7 +21,7 @@ public slots:
     //void newConnection();
     void connected();
     void disconnected();
-    void byteWritten(qint64 bytes);
+    void bytesWritten(qint64 bytes);
     void readyRead();
 
 private:

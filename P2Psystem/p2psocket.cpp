@@ -51,7 +51,7 @@ void p2psocket::disconnected(){
     qDebug()<<"Disconnected";
 }
 
-void p2psocket::byteWritten(qint64 bytes){
+void p2psocket::bytesWritten(qint64 bytes){
     qDebug()<<"wrote bytes:"<<bytes;
 }
 
