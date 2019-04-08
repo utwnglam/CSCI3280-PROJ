@@ -50,7 +50,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     QDir myPath("../P2Psystem/Music");
     myPath.setFilter(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
     myList = myPath.entryList();
-    //ui->songL->addItems(myList);
 
 
     //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
@@ -119,14 +118,45 @@ void MainWindow::on_Add_clicked()
     pItem->setText(tmpList[0]);
     ui->songL->addItem(pItem);
 
-    //mPlayer->setMedia(QUrl::fromLocalFile(filename));
-    //on_playButton_clicked();
+    //adding new line to database when adding new songs
+    QFile file("../P2Psystem/music_database.txt");
+    if(!file.open(QIODevice::ReadWrite))
+        QMessageBox::information(0,"database not found",file.errorString());
+    QTextStream edit(&file);
+    QString tobeAdd = "'"+ path +"', '"+ tmpList[0] +"', 'N/A', 'N/A'";
+
+    file.seek(file.size());
+    edit << tobeAdd << endl;
 }
 
 void MainWindow::on_Del_clicked()
 {
     QList<QListWidgetItem *> itemList = ui->songL->selectedItems();
-    int row= ui->songL->row(itemList[0]);
+    int row = ui->songL->row(itemList[0]);
+
+    //delete line in database
+    QFile file("../P2Psystem/music_database.txt");
+    if(!file.open(QIODevice::ReadWrite))
+        QMessageBox::information(0,"database not found",file.errorString());
+    QTextStream edit(&file);
+    QString newPassage;
+
+    int i = 0;
+    while(ui->songL->item(row)->data(Qt::UserRole + 1) != myList[i]) {
+        i += 1;
+    }
+    for (int k = 0; k <= i; k++) {
+        file.readLine();
+    }
+    QString remainText = edit.readAll();
+    file.seek(0);
+    for (int k = 0; k < i; k++) {
+        newPassage += file.readLine();
+    }
+    newPassage += remainText;
+    file.resize(0);
+    edit << newPassage;
+
     ui->songL->takeItem(row);
 }
 
@@ -192,7 +222,6 @@ void MainWindow::on_playButton_clicked()
         connect(p, SIGNAL(GetLength(QString)), this, SLOT(onGetLength(QString)));
         ui->playButton->setText("stop");
     } else {
-        //mPlayer->stop();
         ui->playButton->setText("play");
         p->Stop=false;
         std::cout << "the music is stop!" << endl;
@@ -253,31 +282,67 @@ void MainWindow::on_songL_itemDoubleClicked(QListWidgetItem *item)
 
 void MainWindow::on_Edit_clicked()
 {
-    QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/music_database.txt");
+    QFile file("../P2Psystem/music_database.txt");
     if(!file.open(QIODevice::ReadWrite))
         QMessageBox::information(0,"database not found",file.errorString());
     QTextStream edit(&file);
+    QTextStream db(stdout);
+    QString desiredLine;
+
+    QList<QListWidgetItem *> itemList = ui->songL->selectedItems();
+    int row = ui->songL->row(itemList[0]);
 
     //change singer name
     if(ui->singerEdit->text() != NULL){
-        QString editText = edit.readAll();
-        QRegularExpression re(ui->bandName->text());
-        QString replacementText(ui->singerEdit->text());
-        editText.replace(re, replacementText);
+        int i = 0;
+        //find the desired line
+        while(ui->songName->text() != myList[i]) {
+            i += 1;
+        }
+        for (int k = 0; k <= i; k++) {
+            desiredLine = file.readLine();
+        }
+        //edit it
+        QStringList strlist = desiredLine.split('\'');
+        QString tobeAdd = "'"+ strlist[1] +"', '"+ ui->songName->text() +"', '"+ ui->singerEdit->text() +"', '"+ strlist[7] +"'";
 
+        db << tobeAdd << endl; //for debug
+        //push it into the file
+        file.seek(0);
+        QString editText = edit.readAll();
+        QRegularExpression re(desiredLine);
+        QString replacementText(tobeAdd);
+        editText.replace(re, replacementText);
         file.resize(0);
         edit << editText;
+
+        //start to update songL item
+        ui->songL->item(row)->setData(Qt::UserRole + 2, ui->singerEdit->text());
+        ui->bandName->setText(ui->singerEdit->text());
     }
 
     //change album name
     if(ui->albumEdit->text() != NULL){
+        int i = 0;
+        while(ui->songName->text() != myList[i]) {
+            i += 1;
+        }
+        for (int k = 0; k <= i; k++) {
+            desiredLine = file.readLine();
+        }
+        QStringList strlist = desiredLine.split('\'');
+        QString tobeAdd = "'"+ strlist[1] +"', '"+ ui->songName->text() +"', '"+ strlist[5] +"', '"+ ui->albumEdit->text() +"'";
+
+        file.seek(0);
         QString editText = edit.readAll();
-        QRegularExpression re(ui->albumName->text());
-        QString replacementText(ui->albumEdit->text());
+        QRegularExpression re(desiredLine);
+        QString replacementText(tobeAdd);
         editText.replace(re, replacementText);
 
         file.resize(0);
         edit << editText;
+        ui->songL->item(row)->setData(Qt::UserRole + 3, ui->albumEdit->text());
+        ui->albumName->setText(ui->albumEdit->text());
     }
 }
 
@@ -303,7 +368,9 @@ void MainWindow::on_p2pButton_clicked()
 
 
 
+
 //void MainWindow::on_ProgressBar_actionTriggered(int action)
 //{
 //
 //}
+

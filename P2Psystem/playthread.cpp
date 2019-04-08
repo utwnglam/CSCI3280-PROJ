@@ -107,7 +107,9 @@ void playthread::playwave(){
 
     //szFileName = (LPTSTR)filename;
     szPathName = (LPTSTR)path.c_str();
-    float speed = 1.5;
+
+    float speed = 2.0;
+
     HMMIO m_hmmio;
     //printf("%s\n", szPathName);
     // lyrics start
