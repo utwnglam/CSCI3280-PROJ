@@ -12,6 +12,7 @@ public:
     void run();
     bool Stop;
     QString song;
+    float speed;
     const char *readLine(FILE *file);
     int calculatingTime(char min[], char sec[], double speed);
 signals:
