@@ -223,8 +223,16 @@ void MainWindow::on_playButton_clicked()
         qDebug() << "The speed" << QString::number(p->speed, 'f', 2);
         connect(p, SIGNAL(GetLength(QString)), this, SLOT(onGetLength(QString)));
         ui->playButton->setText("stop");
+        QIcon ico;
+        ico.addPixmap(QPixmap("../P2Psystem/images/stop.png"),QIcon::Normal,QIcon::On);
+        ui->playButton->setIcon(ico);
+        ui->playButton->setCheckable(true);
     } else {
         ui->playButton->setText("play");
+        QIcon ico;
+        ico.addPixmap(QPixmap("../P2Psystem/images/play.png"),QIcon::Normal,QIcon::On);
+        ui->playButton->setIcon(ico);
+        ui->playButton->setCheckable(true);
         p->Stop=false;
         std::cout << "the music is stop!" << endl;
     }
