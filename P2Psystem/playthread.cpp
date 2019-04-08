@@ -24,9 +24,6 @@ playthread::playthread(QObject *parent):QThread(parent)
 
 void playthread::run(){
 
-
-    //std::string path="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song1+".wav";
-    //qDebug()<< song;
     if(this->Stop){
         playwave();
         if(!this->Stop){
@@ -140,7 +137,6 @@ void playthread::playwave(){
     int count=0;
     do {
         if(!this->Stop){
-            qDebug()<<this->Stop;
            break;
         }
     } while (waveOutUnprepareHeader(hWaveOut, &WaveOutHdr, sizeof(WAVEHDR)) == WAVERR_STILLPLAYING);

@@ -40,8 +40,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 {
     ui->setupUi(this);
     setWindowTitle(tr("P2P Karaoke System"));
-    //connect(ui->playButton,&QPushButton::clicked,this,&MainWindow::on_playButton_clicked);
-    p =new playthread(this);
     //connect(p,SIGNAL(play()),this,SLOT(onplay()));
     m_thread=new playthread(this);
     /*
@@ -85,28 +83,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         */
     }
     file.close();
-
-    /*
-    int nCount = ui->songL->count();
-    for(int i=0;i<nCount;i++){
-        QListWidgetItem *item = ui->songL->item(i);
-    }
-    QString lyric = this->getLyric(currentSongInfo.lyricLink);//get lyrics from web
-    lyricList = this->parse(lyric);//get lyrics sentence by sentence to lyricList
-    list->setBackgroundColor(Qt::red);
-
-    mPlayer = new QMediaPlayer(this);
-    connect(mPlayer, &QMediaPlayer::positionchanged, this, &MainWindow::on_positionChanged);
-    */
 }
 
 void MainWindow::DoSetup(QThread &mainThread){
-    connect(&mainThread,SIGNAL(started()),this,SLOT(on_playButton_clicked()));
-    //connect(&mainThread,SIGNAL(started()),this,SLOT(on_Del_clicked()));
-    //connect(&mainThread,SIGNAL(started()),this,SLOT(on_connectButton_clicked()));
-    //connect(&mainThread,SIGNAL(started()),this,SLOT(on_disButton_clicked()));
-    //connect(&mainThread,SIGNAL(started()),this,SLOT(on_p2pButton_clicked()));
-    //connect(&mainThread,SIGNAL(started()),this,SLOT(on_searchBar_textChanged(const QString &arg1)));
+    //connect(&mainThread,SIGNAL(started()),this,SLOT(on_playButton_clicked()));
 }
 
 MainWindow::~MainWindow()
@@ -124,6 +104,7 @@ void MainWindow::on_Add_clicked()
     QString tmp =filepath[filepath.size()-1];
     QStringList tmpList=tmp.split('.');
     tmpList.removeLast();
+    myList.append(tmpList[0]);
 
     //copy the new song to music folder
     std::string song=tmp.toStdString().c_str();//Qstring to string
