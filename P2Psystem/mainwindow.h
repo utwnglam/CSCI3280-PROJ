@@ -26,7 +26,6 @@ public:
     //playthread *p;
 
 public slots:
-    void onplay();
     void onupLyric(const char *);
     void onGetLength(QString);
     void ontimeUpdate(unsigned int);

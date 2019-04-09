@@ -36,7 +36,7 @@ void server::newConnection(){
 
 void server::StartServer(){
 
-    if(!this->listen(QHostAddress::Any,1234)){
+    if(!this->listen(QHostAddress::Any,1234)){//this=QtcpServer server
         qDebug()<<"Server build fail";
     }else{
         qDebug()<<"Server builded";
@@ -45,7 +45,7 @@ void server::StartServer(){
 
 void server::incomingConnection(qintptr socketDescriptor){
 
-    qDebug()<<socketDescriptor<<"connecting..";
+    qDebug()<<socketDescriptor<<"(server)a client connecting..";
     p2pThread *thread =new p2pThread(socketDescriptor,this);
     connect(thread,SIGNAL(finished()),thread,SLOT(deleteLater()));
     thread->start();
