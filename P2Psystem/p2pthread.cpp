@@ -24,30 +24,6 @@ void p2pThread::run(){
     exec();
 }
 
-void p2pThread::sendString()  {
-    // send via QByteArray
-    /*QByteArray block;
-    QDataStream out(&block, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_5_5);
-    out << (quint16)0;
-    // create data for the client
-    QString data;
-    data.append(tr("Just some bla "));
-    out << data;
-    out.device()->seek(0);
-    out << (quint16)(block.size() - sizeof(quint16));
-    // get the next client-connection
-    QTcpSocket *clientConnection =
-        mServer->nextPendingConnection();
-    // signal
-    connect(clientConnection, SIGNAL(disconnected()),
-        clientConnection, SLOT(deleteLater()));
-    // write the string into the socket
-    c->write(block);
-    // disconnect
-    clientConnection->disconnectFromHost();*/
-}
-
 void p2pThread::readyRead(){
 
     //blockSize=0;

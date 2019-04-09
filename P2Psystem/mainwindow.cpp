@@ -406,6 +406,32 @@ void MainWindow::on_connectButton_clicked()
     database =new updatabase(this);
     database->ip=ui->IPaddr->text();
     database->databaseConnect();//ui->IPaddr->text().toStdString().c_str();
+    QFile file("../P2Psystem/music_database2.txt");
+    //QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/music_database.txt");
+    if(!file.open(QIODevice::ReadWrite))
+        QMessageBox::information(0,"database not found",file.errorString());
+    QTextStream in(&file);
+    //QTextStream edit(&file);
+    //QString line = in.readLine();
+    //QStringList strlist = line.split('\'');
+    //QStringList forCompare = strlist;
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        QStringList strlist = line.split('\'');
+        //QStringList forCompare = strlist;
+        //forCompare.removeAt(1);
+
+        QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
+        pItem->setData(Qt::UserRole, strlist[1]);
+        pItem->setData(Qt::UserRole + 1, strlist[3]);
+        pItem->setData(Qt::UserRole + 2, strlist[5]);
+        pItem->setData(Qt::UserRole + 3, strlist[7]);
+        pItem->setText(strlist[3]);
+        ui->songL->addItem(pItem);
+
+
+    }
+    file.close();
 
 }
 
@@ -554,7 +580,7 @@ void MainWindow::on_download_clicked()
     QFile file("../P2Psystem/music_database.txt");
     if(!file.open(QIODevice::ReadWrite))
         QMessageBox::information(0,"database not found",file.errorString());
-    QTextStream in(&file);
+   /* QTextStream in(&file);
     bool nomatchResult = true;
     //INPUTING DATABASE INTO ARRAY
     QString whole = in.readAll();
@@ -573,14 +599,14 @@ void MainWindow::on_download_clicked()
                 pItem->setData(Qt::UserRole + 2, partList[2].mid(1, partList[2].length()-2));
                 pItem->setData(Qt::UserRole + 3, partList[3].mid(1, tmpList[0].length()-2));
                 pItem->setText(partList[1].mid(1, partList[1].length()-2) + " (Local)");
-                ui->songL->addItem(pItem);*/
+                ui->songL->addItem(pItem);
                 nomatchResult = false;
                 break;
             }
         }
-    }
+    }*/
 
-    if(nomatchResult == true ){
+    //if(nomatchResult == false ){
         printf("new song");
         socket = new p2psocket(this);
         socket->ip=ui->IPaddr->text();
@@ -593,7 +619,7 @@ void MainWindow::on_download_clicked()
             edit << endl << tobeAdd;
             file.close();
         }
-    }
+    //}
 }
 
 

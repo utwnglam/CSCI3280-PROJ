@@ -25,7 +25,6 @@ signals:
 public slots:
     void disconnected();
     void readyRead();
-    void sendString();
 
 private:
     QTcpSocket *socketTh;
