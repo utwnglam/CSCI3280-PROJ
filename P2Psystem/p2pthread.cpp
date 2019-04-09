@@ -4,8 +4,8 @@ p2pThread::p2pThread(int ID, QObject *parent):QThread(parent)
 {
     this->socketDescriptor = ID;
     socketTh = new QTcpSocket();
-    qDebug()<<"Start thread";
-    socketTh = new QTcpSocket();
+    qDebug()<<"(server)Start thread";
+    //socketTh = new QTcpSocket();
     if(!socketTh->setSocketDescriptor(this->socketDescriptor)){
         emit error(socketTh->error());
         return;
@@ -17,7 +17,7 @@ p2pThread::p2pThread(int ID, QObject *parent):QThread(parent)
 
 void p2pThread::run(){
     //thread start
-    qDebug()<<socketDescriptor<<"Client Connected";
+    qDebug()<<socketDescriptor<<"(server)Client Connected";
     exec();
 }
 
@@ -47,18 +47,28 @@ void p2pThread::sendString()  {
 
 void p2pThread::readyRead(){
 
-    QByteArray Data=socketTh->readAll();
-
+    blockSize=0;
+    QDataStream in(socketTh);
+    in.setVersion(QDataStream::Qt_4_6);
+    QByteArray Data;
+    Data=socketTh->readAll();
     qDebug()<<socketDescriptor<<"Data in: "<<Data;
+   /* if (blockSize == 0) {
+            if(socketTh->bytesAvailable() < (int)sizeof(quint16)) return;
+            in >> blockSize;
+        }
+        if(socketTh->bytesAvailable() < blockSize)
+            return;*/
+    //in >> Data;
     socketTh->write(Data);
     socketTh->waitForBytesWritten(6000);
 
-    //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\database2.txt"); // download path
-    QFile file("C:\\Users\\user\\CSCI3280-PROJ\\numb.wav");
+    QFile file("C:\\Users\\user\\CSCI3280-PROJ\\database2.txt"); // download path
+    //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\numb.wav");
     file.open(QIODevice::WriteOnly);
     file.write(Data);
     file.close();
-    Data.resize(0);
+    //Data.resize(0);
 }
 
 void p2pThread::disconnected(){

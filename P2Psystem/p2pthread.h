@@ -28,6 +28,7 @@ public slots:
 private:
     QTcpSocket *socketTh;
     int socketDescriptor;
+    quint16 blockSize;
 };
 
 #endif // P2PTHREAD_H

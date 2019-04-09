@@ -170,9 +170,6 @@ void MainWindow::on_Del_clicked()
     file.close();
 }
 
-void MainWindow::onplay(){
-
-}
 
 void MainWindow::onupLyric(const char * line){
     ui->lyrics->setText(QString::fromStdString(line));
@@ -228,8 +225,8 @@ void MainWindow::on_playButton_clicked()
         ui->lyrics->setText("Lyrics");
         p->song=song;
         p->Stop=true;
-        p->start();
         p->speed = speed;
+        p->start();
         qDebug() << "The speed" << QString::number(p->speed, 'f', 2);
         connect(p, SIGNAL(GetLength(QString)), this, SLOT(onGetLength(QString)));
         ui->playButton->setText("stop");
@@ -295,9 +292,16 @@ void MainWindow::on_searchBar_textChanged(const QString &arg1)
 
 void MainWindow::on_songL_itemDoubleClicked(QListWidgetItem *item)
 {
-    ui->songName->setText(item->data(Qt::UserRole + 1).toString());
-    ui->bandName->setText(item->data(Qt::UserRole + 2).toString());
-    ui->albumName->setText(item->data(Qt::UserRole + 3).toString());
+    QList<QListWidgetItem *> itemList = ui->songL->selectedItems();
+    int row = ui->songL->row(itemList[0]);
+
+    for(int i=0;i<myList.size();i++){
+        if(item->data(Qt::UserRole + 1).toString()==myList[row]){
+        ui->songName->setText(item->data(Qt::UserRole + 1).toString());
+        ui->bandName->setText(item->data(Qt::UserRole + 2).toString());
+        ui->albumName->setText(item->data(Qt::UserRole + 3).toString());
+        }
+    }
     QString album_picture = "../P2Psystem/images/" + ui->songName->text() + ".jpg";
     QFile pic(album_picture);
     if(pic.exists())

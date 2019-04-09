@@ -9,6 +9,8 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QDataStream>
+#include <QAudioOutput>
+#include <QAudioInput>
 
 class p2psocket : public QObject
 {
