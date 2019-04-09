@@ -413,11 +413,16 @@ void MainWindow::on_p2pButton_clicked()
 void MainWindow::on_pushButton_clicked()
 {
 
+    QString path = QFileDialog::getOpenFileName(this,"Add");
+    if(path == NULL){
+        return;
+    }
+    qDebug() << path;
     QMediaPlayer* player = new QMediaPlayer;
     QVideoWidget* vw = new QVideoWidget;
 
     player->setVideoOutput(vw);
-    player->setMedia(QUrl::fromLocalFile("C:/Users/adam9/Desktop/Nishino.mp4"));
+    player->setMedia(QUrl::fromLocalFile((path)));
     vw->setGeometry(100,100,300,400);
     vw->show();
 
