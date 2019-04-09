@@ -1,5 +1,4 @@
 #include "server.h"
-#include "client.h"
 
 server::server(QObject *parent):QTcpServer(parent)
 {

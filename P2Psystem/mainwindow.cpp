@@ -317,28 +317,55 @@ void MainWindow::on_songL_itemDoubleClicked(QListWidgetItem *item)
 {
     QList<QListWidgetItem *> itemList = ui->songL->selectedItems();
     int row = ui->songL->row(itemList[0]);
-
+    QString songname=ui->songName->text();
 
     ui->songName->setText(item->data(Qt::UserRole + 1).toString());
     ui->bandName->setText(item->data(Qt::UserRole + 2).toString());
     ui->albumName->setText(item->data(Qt::UserRole + 3).toString());
-    //if( ){
-    socket = new p2psocket(this);
-    socket->ip=ui->IPaddr->text();
-    socket->song=ui->songName->text();
-    socket->p2pconnect();
-    if(socket->ok==true){
-        QFile file("../P2Psystem/music_database.txt");
-        if(!file.open(QIODevice::ReadWrite))
-            QMessageBox::information(0,"database not found",file.errorString());
-        QTextStream edit(&file);
-        QString tobeAdd = "'"+ socket->song+".wav" +"', '"+ socket->song +"', 'N/A', 'N/A'";
 
-        file.seek(file.size());
-        edit << endl << tobeAdd;
-        file.close();
+    //if no a local song>>down
+    QFile file("../P2Psystem/music_database.txt");
+    if(!file.open(QIODevice::ReadWrite))
+        QMessageBox::information(0,"database not found",file.errorString());
+    QTextStream in(&file);
+    bool nomatchResult = true;
+    //INPUTING DATABASE INTO ARRAY
+    QString whole = in.readAll();
+    QStringList linelist = whole.split('\n');
+    for(int i = myList.size()-1; i >= 0; i -= 1) {
+        for(int count = 0; count < linelist.size(); count++) {
+
+            //finding its according partList item
+            QStringList partList = linelist[count].split(", ");
+
+            if (myList[i] == partList[0].mid(1, partList[0].length()-2)) {
+                QStringList tmpList = partList[3].split('\r');
+                QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
+                pItem->setData(Qt::UserRole, partList[0].mid(1, partList[0].length()-2));
+                pItem->setData(Qt::UserRole + 1, partList[1].mid(1, partList[1].length()-2));
+                pItem->setData(Qt::UserRole + 2, partList[2].mid(1, partList[2].length()-2));
+                pItem->setData(Qt::UserRole + 3, partList[3].mid(1, tmpList[0].length()-2));
+                pItem->setText(partList[1].mid(1, partList[1].length()-2) + " (Local)");
+                ui->songL->addItem(pItem);
+                nomatchResult = false;
+                break;
+            }
+        }
     }
-    //}
+
+    if(nomatchResult == true ){
+        socket = new p2psocket(this);
+        socket->ip=ui->IPaddr->text();
+        socket->song=songname;
+        socket->p2pconnect();
+        if(socket->ok==true){
+            QTextStream edit(&file);
+            QString tobeAdd = "'"+ songname+".wav" +"', '"+ songname +"', 'N/A', 'N/A'";
+            file.seek(file.size());
+            edit << endl << tobeAdd;
+            file.close();
+        }
+    }
     //*
     QString album_picture = "../P2Psystem/images/" + ui->songName->text() + ".jpg";
     //QString album_picture = "/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/images/" + ui->songName->text() + ".jpg";

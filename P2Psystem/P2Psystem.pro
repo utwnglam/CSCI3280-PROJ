@@ -35,9 +35,7 @@ HEADERS  += mainwindow.h \
     p2psocket.h \
     server.h \
     p2pthread.h \
-    playthread.h \
-    client.h \
-    send.h
+    playthread.h
 
 FORMS    += mainwindow.ui
 

@@ -6,8 +6,6 @@
 #include <QTcpServer>
 #include <QThreadPool>
 #include "p2pthread.h"
-#include "client.h"
-#include "send.h"
 
 class server : public QTcpServer
 {
