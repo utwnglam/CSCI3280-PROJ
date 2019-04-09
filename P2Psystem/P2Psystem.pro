@@ -29,9 +29,7 @@ SOURCES += main.cpp\
     p2psocket.cpp \
     server.cpp \
     p2pthread.cpp \
-    playthread.cpp \
-    client.cpp \
-    send.cpp
+    playthread.cpp
 
 HEADERS  += mainwindow.h \
     p2psocket.h \
