@@ -218,13 +218,13 @@ void MainWindow::on_playButton_clicked()
     int exist=0;
     QString song = ui->songName->text();
     //std::string song1=song.toStdString().c_str();
-    for(int i=0;i<myList.size();i++){//check is the song exit
+    /*for(int i=0;i<myList.size();i++){//check is the song exit
         if(song==myList[i]){
             break;
         }else if(i==myList.size()-1){
             exist=1;
         }
-    }
+    }*/
     //std::string path="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song1+".wav";
     //std::string path="E:\\Alisa\\Yr4_Sem2\\CSCI3280 Multimedia\\project\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song1+".wav";
 
@@ -306,13 +306,11 @@ void MainWindow::on_songL_itemDoubleClicked(QListWidgetItem *item)
     QList<QListWidgetItem *> itemList = ui->songL->selectedItems();
     int row = ui->songL->row(itemList[0]);
 
-    for(int i=0;i<myList.size();i++){
-        if(item->data(Qt::UserRole + 1).toString()==myList[row]){
-        ui->songName->setText(item->data(Qt::UserRole + 1).toString());
-        ui->bandName->setText(item->data(Qt::UserRole + 2).toString());
-        ui->albumName->setText(item->data(Qt::UserRole + 3).toString());
-        }
-    }
+
+    ui->songName->setText(item->data(Qt::UserRole + 1).toString());
+    ui->bandName->setText(item->data(Qt::UserRole + 2).toString());
+    ui->albumName->setText(item->data(Qt::UserRole + 3).toString());
+
     QString album_picture = "../P2Psystem/images/" + ui->songName->text() + ".jpg";
     QFile pic(album_picture);
     if(pic.exists())
