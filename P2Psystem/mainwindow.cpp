@@ -404,6 +404,49 @@ void MainWindow::on_connectButton_clicked()
 {
     socket = new p2psocket(this);
     socket->p2pconnect();//ui->IPaddr->text().toStdString().c_str();
+
+    adding_new_song();
+}
+
+void MainWindow::adding_new_song() {
+    //adding new songs
+
+    //the path of the new database
+    QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/music_database2.txt");
+    //QFile file("../P2Psystem/music_database2.txt");
+
+    //open the file and read
+    if(!file.open(QIODevice::ReadWrite))
+        QMessageBox::information(0,"database not found",file.errorString());
+    QTextStream edit(&file);
+    QString wholePassage = edit.readAll();
+    QStringList lineList = wholePassage.split('\n');
+
+    //compare with myList
+    for(int i = 0; i <lineList.size(); i++) {
+        bool NoNeedtoAdd = false;
+        QStringList partList = lineList[i].split(", ");
+        QString tobecompared = partList[0].mid(1, partList[0].size()-2);
+        for (int j = 0; j < myList.size(); j++) {
+            if (tobecompared == myList[j]) {
+                NoNeedtoAdd = true;
+            }
+        }
+
+        //if needed, add into the songL
+        if (!NoNeedtoAdd) {
+            QStringList tmpList = partList[3].split('\r');
+            QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
+            pItem->setData(Qt::UserRole, tobecompared);
+            pItem->setData(Qt::UserRole + 1, partList[1].mid(1, partList[1].size()-2));
+            pItem->setData(Qt::UserRole + 2, partList[2].mid(1, partList[2].size()-2));
+            pItem->setData(Qt::UserRole + 3, tmpList[0].mid(1, tmpList[0].size()-2));
+            pItem->setText(partList[1].mid(1, partList[1].size()-2));
+            ui->songL->addItem(pItem);
+
+            myList.append(tobecompared);
+        }
+    }
 }
 
 void MainWindow::on_disButton_clicked()
