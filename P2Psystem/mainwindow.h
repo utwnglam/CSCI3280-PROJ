@@ -53,6 +53,7 @@ private slots:
 
     //play();
 
+    void delete_nonlocal_song();
     //void on_ProgressBar_actionTriggered(int action);
 
     void on_pushButton_clicked();

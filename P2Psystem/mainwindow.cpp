@@ -449,9 +449,54 @@ void MainWindow::adding_new_song() {
     }
 }
 
+void MainWindow::delete_nonlocal_song() {
+    ui->songL->clear();
+
+    //The path of the original database
+    //*
+    //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
+    QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/music_database.txt");
+    if(!file.open(QIODevice::ReadOnly))
+        QMessageBox::information(0,"database not found",file.errorString());
+    QTextStream in(&file);
+
+    //INPUTING DATABASE INTO ARRAY
+    QString whole = in.readAll();
+    QStringList linelist = whole.split('\n');
+    for(int i = myList.size()-1; i >= 0; i -= 1) {
+        bool nomatchResult = true;
+
+        //for each myList item
+        for(int count = 0; count < linelist.size(); count++) {
+
+            //finding its according partList item
+            QStringList partList = linelist[count].split(", ");
+
+            if (myList[i] == partList[0].mid(1, partList[0].length()-2)) {
+                QStringList tmpList = partList[3].split('\r');
+                QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
+                pItem->setData(Qt::UserRole, partList[0].mid(1, partList[0].length()-2));
+                pItem->setData(Qt::UserRole + 1, partList[1].mid(1, partList[1].length()-2));
+                pItem->setData(Qt::UserRole + 2, partList[2].mid(1, partList[2].length()-2));
+                pItem->setData(Qt::UserRole + 3, partList[3].mid(1, tmpList[0].length()-2));
+                pItem->setText(partList[1].mid(1, partList[1].length()-2) + " (Local)");
+                ui->songL->addItem(pItem);
+                nomatchResult = false;
+                break;
+            }
+        }
+        //clear myList record
+        if (nomatchResult) {
+            myList.removeAt(i);
+        }
+    }
+    file.close();
+}
+
 void MainWindow::on_disButton_clicked()
 {
     count=0;
+    delete_nonlocal_song();
 }
 
 void MainWindow::on_p2pButton_clicked()
