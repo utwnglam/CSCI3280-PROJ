@@ -60,30 +60,36 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     //INPUTING DATABASE INTO ARRAY
     QTextStream in(&file);
-    for(int i = 0; i< myList.size();++i)
-    {
-        QString line = in.readLine();
-        QStringList strlist = line.split('\'');
-        QString tmp = myList.at(i);
-        QStringList tmpList=tmp.split('.');
-        tmpList.removeLast();
-        myList[i]=tmpList[0];
+    QString whole = in.readAll();
+    QStringList linelist = whole.split('\n');
+    for(int i = 0; i < myList.size(); i += 1) {
 
-        QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
-        pItem->setData(Qt::UserRole, strlist[1]);
-        pItem->setData(Qt::UserRole + 1, tmpList[0]);
-        pItem->setData(Qt::UserRole + 2, strlist[5]);
-        pItem->setData(Qt::UserRole + 3, strlist[7]);
-        pItem->setText(tmpList[0]);
-        ui->songL->addItem(pItem);
+        //for each myList item
+        for(int count = 0; count < myList.size(); count++) {
 
-        /*
-        pathName is strlist[1], index: Qt::UserRole
-        songName is strlist[3], index: Qt::UserRole + 1
-        bandName is strlist[5], index: Qt::UserRole + 2
-        albumName is strlist[7], index: Qt::UserRole + 3
-        */
+            //finding its according partList item
+            QStringList partList = linelist[count].split(", ");
+            if (myList[i] == partList[0].mid(1, partList[0].length()-2)) {
+                //I have to delete that annoying \r
+                QStringList tmpList = partList[3].split('\r');
+
+                QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
+                pItem->setData(Qt::UserRole, partList[0].mid(1, partList[0].length()-2));
+                pItem->setData(Qt::UserRole + 1, partList[1].mid(1, partList[1].length()-2));
+                pItem->setData(Qt::UserRole + 2, partList[2].mid(1, partList[2].length()-2));
+                pItem->setData(Qt::UserRole + 3, partList[3].mid(1, tmpList[0].length()-2));
+                pItem->setText(partList[1].mid(1, partList[1].length()-2));
+                ui->songL->addItem(pItem);
+                break;
+            }
+        }
     }
+    /*
+    pathName is partList[0], index: Qt::UserRole
+    songName is partList[1], index: Qt::UserRole + 1
+    bandName is partList[2], index: Qt::UserRole + 2
+    albumName is partList[3], index: Qt::UserRole + 3
+    */
     file.close();
 }
 
@@ -141,30 +147,35 @@ void MainWindow::on_Del_clicked()
     if(!file.open(QIODevice::ReadWrite))
         QMessageBox::information(0,"database not found",file.errorString());
     QTextStream edit(&file);
-    QString newPassage;
 
-    int i = 0;
-    while(ui->songL->item(row)->data(Qt::UserRole + 1) != myList[i]) {
-        i += 1;
+    QString oriPassage = edit.readAll();
+    QStringList linelist = oriPassage.split('\n');
+    QString newpassage;
+
+    for(int j = 0; j < linelist.size(); j++) {
+        //finding its according partList item
+        QStringList partList = linelist[j].split(", ");
+        if (ui->songL->item(row)->data(Qt::UserRole) != partList[0].mid(1, partList[0].length()-2)) {
+            newpassage += linelist[j] + '\n';
+        }
     }
-    for (int k = 0; k <= i; k++) {
-        file.readLine();
-    }
-    QString remainText = edit.readAll();
-    file.seek(0);
-    for (int k = 0; k < i; k++) {
-        newPassage += file.readLine();
-    }
-    newPassage += remainText;
-    newPassage.chop(1);
+
+    newpassage.chop(1);
     file.resize(0);
-    edit << newPassage;
+    edit << newpassage;
 
-    QString delPath = "../P2Psystem/Music/" + ui->songL->item(row)->data(Qt::UserRole).toString();
+    QString delPath = "/Users/JoanneCheung/Desktop/ver 1/P2Psystem/Music/" + ui->songL->item(row)->data(Qt::UserRole).toString();
     QTextStream debug(stdout);
     debug << delPath;
     QFile delFile(delPath);
     delFile.remove();
+
+    for(int k = 0; k < myList.size(); k++) {
+        if(myList[k] == ui->songL->item(row)->data(Qt::UserRole)) {
+            myList.removeAt(k);
+            break;
+        }
+    }
 
     ui->songL->takeItem(row);
     file.close();
@@ -318,64 +329,55 @@ void MainWindow::on_Edit_clicked()
     if(!file.open(QIODevice::ReadWrite))
         QMessageBox::information(0,"database not found",file.errorString());
     QTextStream edit(&file);
-    QTextStream db(stdout);
-    QString desiredLine;
-
     QList<QListWidgetItem *> itemList = ui->songL->selectedItems();
     int row = ui->songL->row(itemList[0]);
+    QTextStream db(stdout); //fore debug
 
-    //change singer name
-    if(ui->singerEdit->text() != NULL){
-        int i = 0;
-        //find the desired line
-        while(ui->songName->text() != myList[i]) {
-            i += 1;
+    QString oriPassage = edit.readAll();
+    //lineList is ready
+    QStringList linelist = oriPassage.split('\n');
+    QString newPassage;
+
+    for (int i = 0; i < myList.size(); i++) {
+
+        //prepare partlist for you
+        QStringList partList = linelist[i].split(", ");
+        if(ui->songL->item(row)->data(Qt::UserRole) != partList[0].mid(1, partList[0].length()-2)) {
+            newPassage += linelist[i]+ '\n';
         }
-        for (int k = 0; k <= i; k++) {
-            desiredLine = file.readLine();
+        else {
+            QString tobeAdd, part2, part3;
+            QStringList temp;
+            //edit it
+            if(ui->singerEdit->text() != NULL){
+                part2 = ui->singerEdit->text();
+                //start to update songL item
+                ui->songL->item(row)->setData(Qt::UserRole + 2, ui->singerEdit->text());
+                ui->bandName->setText(ui->singerEdit->text());
+            }
+            else {
+                part2 = partList[2].mid(1, partList[2].length()-2);
+            }
+            if(ui->albumEdit->text() != NULL){
+                part3 = ui->albumEdit->text();
+                //start to update songL item
+                ui->songL->item(row)->setData(Qt::UserRole + 3, ui->albumEdit->text());
+                ui->albumName->setText(ui->albumEdit->text());
+            }
+            else {
+                temp = partList[3].split('\r');
+                part3 = temp[0].mid(1, partList[3].length()-2);
+            }
+            tobeAdd = partList[0] +", '"+ ui->songName->text() +"', '"+ part2 +"', '"+ part3 + "'";
+            db << tobeAdd << endl; //for debug
+            newPassage += tobeAdd + '\n';
         }
-        //edit it
-        QStringList strlist = desiredLine.split('\'');
-        QString tobeAdd = "'"+ strlist[1] +"', '"+ ui->songName->text() +"', '"+ ui->singerEdit->text() +"', '"+ strlist[7] +"'";
-
-        db << tobeAdd << endl; //for debug
-        //push it into the file
-        file.seek(0);
-        QString editText = edit.readAll();
-        QRegularExpression re(desiredLine);
-        QString replacementText(tobeAdd);
-        editText.replace(re, replacementText);
-        file.resize(0);
-        edit << editText;
-
-        //start to update songL item
-        ui->songL->item(row)->setData(Qt::UserRole + 2, ui->singerEdit->text());
-        ui->bandName->setText(ui->singerEdit->text());
     }
 
-    //change album name
-    if(ui->albumEdit->text() != NULL){
-        int i = 0;
-        while(ui->songName->text() != myList[i]) {
-            i += 1;
-        }
-        for (int k = 0; k <= i; k++) {
-            desiredLine = file.readLine();
-        }
-        QStringList strlist = desiredLine.split('\'');
-        QString tobeAdd = "'"+ strlist[1] +"', '"+ ui->songName->text() +"', '"+ strlist[5] +"', '"+ ui->albumEdit->text() +"'";
-
-        file.seek(0);
-        QString editText = edit.readAll();
-        QRegularExpression re(desiredLine);
-        QString replacementText(tobeAdd);
-        editText.replace(re, replacementText);
-
-        file.resize(0);
-        edit << editText;
-        ui->songL->item(row)->setData(Qt::UserRole + 3, ui->albumEdit->text());
-        ui->albumName->setText(ui->albumEdit->text());
-    }
+    //push it into the file
+    file.resize(0);
+    newPassage.chop(1);
+    edit << newPassage;
     file.close();
 }
 
