@@ -55,6 +55,7 @@ private slots:
     //void on_ProgressBar_actionTriggered(int action);
 
     void on_pushButton_clicked();
+    void delete_duplicates();
 
 private:
     Ui::MainWindow *ui;

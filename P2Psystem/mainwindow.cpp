@@ -42,18 +42,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 {
     ui->setupUi(this);
     setWindowTitle(tr("P2P Karaoke System"));
+
     //connect(p,SIGNAL(play()),this,SLOT(onplay()));
     //m_thread=new playthread(this);
-    /*
-     REMEMBER TO CHANGE THE PATH FIRST
-     */
+
     ui->speedControl->setValue(1.0);
+    //*
     //QDir myPath("C:/Users/user/CSCI3280-PROJ/P2Psystem/Music");
     QDir myPath("../P2Psystem/Music");
     //QDir myPath("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/Music");
     myPath.setFilter(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
     myList = myPath.entryList();
 
+    //*
     //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
     QFile file("../P2Psystem/music_database.txt");
     //QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/music_database.txt");
@@ -114,6 +115,8 @@ void MainWindow::on_Add_clicked()
 
     //copy the new song to music folder
     std::string song=tmp.toStdString().c_str();//Qstring to string
+
+    //*
     //std::string newpath="C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\"+song;
     std::string newpath="../P2Psystem/Music/"+song;
     //std::string newpath="/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/Music/"+song;
@@ -129,6 +132,7 @@ void MainWindow::on_Add_clicked()
     ui->songL->addItem(pItem);
 
     //adding new line to database when adding new songs
+    //*
     QFile file("../P2Psystem/music_database.txt");
     //QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/music_database.txt");
     if(!file.open(QIODevice::ReadWrite))
@@ -147,6 +151,7 @@ void MainWindow::on_Del_clicked()
     int row = ui->songL->row(itemList[0]);
 
     //delete line in database
+    //*
     QFile file("../P2Psystem/music_database.txt");
     //QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/music_database.txt");
     if(!file.open(QIODevice::ReadWrite))
@@ -169,7 +174,9 @@ void MainWindow::on_Del_clicked()
     file.resize(0);
     edit << newpassage;
 
+    //*
     QString delPath = "/Users/JoanneCheung/Desktop/ver 1/P2Psystem/Music/" + ui->songL->item(row)->data(Qt::UserRole).toString();
+    //QString delPath = "../P2Psystem/Music/" + ui->songL->item(row)->data(Qt::UserRole).toString();
     QTextStream debug(stdout);
     debug << delPath;
     QFile delFile(delPath);
@@ -262,13 +269,6 @@ void MainWindow::on_playButton_clicked()
         std::cout << "the music is stop!" << endl;
     }
 }
-/*
- * FOR TRANSLATING QSTRING TO CHAR*
-QString temp = item->data(Qt::UserRole).toString();
-QByteArray byteArray = temp.toLocal8Bit();
-char *c = byteArray.data();
-kernel->playMusic(c, 1.0);
-*/
 
 //void MainWindow::on_ProgressBar_sliderMoved(int position)
 //{
@@ -279,6 +279,8 @@ void MainWindow::on_searchBar_textChanged(const QString &arg1)
 {
     QRegExp regExp(arg1, Qt::CaseInsensitive, QRegExp::Wildcard);
     ui->songL->clear();
+
+    //*
     QFile file("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\music_database.txt");
     //QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/music_database.txt");
     if(!file.open(QIODevice::ReadOnly))
@@ -316,6 +318,7 @@ void MainWindow::on_songL_itemDoubleClicked(QListWidgetItem *item)
     ui->bandName->setText(item->data(Qt::UserRole + 2).toString());
     ui->albumName->setText(item->data(Qt::UserRole + 3).toString());
 
+    //*
     QString album_picture = "../P2Psystem/images/" + ui->songName->text() + ".jpg";
     //QString album_picture = "/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/images/" + ui->songName->text() + ".jpg";
     QFile pic(album_picture);
@@ -333,7 +336,8 @@ void MainWindow::on_songL_itemDoubleClicked(QListWidgetItem *item)
 
 void MainWindow::on_Edit_clicked()
 {
-    QString album_picture = "../P2Psystem/images/" + ui->songName->text() + ".jpg";
+    //*
+    QFile file("../P2Psystem/music_database.txt");
     //QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/music_database.txt");
     if(!file.open(QIODevice::ReadWrite))
         QMessageBox::information(0,"database not found",file.errorString());
@@ -413,18 +417,8 @@ void MainWindow::on_p2pButton_clicked()
     }
 }
 
-
-
-
-//void MainWindow::on_ProgressBar_actionTriggered(int action)
-//{
-//
-//}
-
-
 void MainWindow::on_pushButton_clicked()
 {
-
     QString path = QFileDialog::getOpenFileName(this,"Add");
     if(path == NULL){
         return;
@@ -448,3 +442,54 @@ void MainWindow::on_pushButton_clicked()
     player->play();
     */
 }
+
+void MainWindow::delete_duplicates() {
+    //function to delete database with the same file name
+    //*
+    QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/music_database.txt");
+    if(!file.open(QIODevice::ReadWrite))
+        QMessageBox::information(0,"database not found",file.errorString());
+    QTextStream edit(&file);
+    QTextStream output(stdout); // for debug
+
+    QString wholePassage = edit.readAll();
+    QStringList lineList = wholePassage.split('\n');
+
+    int totalLine = lineList.size();
+    int repeatOrNot [totalLine];
+    for (int s = 0; s < totalLine; s++)
+        repeatOrNot[s] = 0;
+
+    for (int i = 0; i < totalLine; i++) {
+        QStringList partList = lineList[i].split(", ");
+        QString tobecompared = partList[0].mid(1, partList[0].size()-2);
+
+        //if the current index is already repeated then no need to check
+        if (repeatOrNot[i] == 0) {
+            for(int k = i+1; k < totalLine; k++) {
+                QStringList partList2 = lineList[k].split(", ");
+                if (repeatOrNot[k] != 1) {
+                    repeatOrNot[k] = 0;
+                }
+                if (tobecompared == partList2[0].mid(1, partList[0].size()-2)) {
+                    repeatOrNot[k] = 1;
+                }
+                output << repeatOrNot[k];
+            }
+        }
+        output << partList[0].mid(1, partList[0].size()-2) << endl;
+    }
+    QString finalData;
+    for (int n = 0; n < totalLine; n++) {
+        if (repeatOrNot[n] == 0) {
+            finalData += lineList[n] + '\n';
+        }
+    }
+    finalData.chop(1);
+    output << finalData << endl;
+    file.resize(0);
+    edit << finalData;
+
+    file.close();
+}
+
