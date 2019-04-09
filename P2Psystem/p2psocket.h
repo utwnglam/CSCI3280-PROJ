@@ -19,6 +19,8 @@ public:
     explicit p2psocket(QObject *parent =0);
 
     void p2pconnect();
+    QString ip;
+    QString song;
 
 signals:
 

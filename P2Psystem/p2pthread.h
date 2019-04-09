@@ -16,6 +16,7 @@ public:
     explicit p2pThread(int ID, QObject *parent =0);
     void run();
     QTcpServer *mServer;
+    QString song;
 
 signals:
     void error(QTcpSocket::SocketError socketerror);
