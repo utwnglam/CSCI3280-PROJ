@@ -14,7 +14,9 @@ p2pThread::p2pThread(int ID, QObject *parent):QThread(parent)
     connect(socketTh,SIGNAL(readyRead()),this,SLOT(readyRead()));
     //connect(socketTh,SIGNAL(sendString()),this,SLOT(sendString()));
     connect(socketTh,SIGNAL(disconnected()),this,SLOT(disconnected()));
+
 }
+
 
 void p2pThread::run(){
     //thread start
@@ -51,9 +53,11 @@ void p2pThread::readyRead(){
     //blockSize=0;
     //QDataStream in(socketTh);
     //in.setVersion(QDataStream::Qt_5_5);
+    QByteArray Data2;
     QByteArray Data;
     socketTh->waitForReadyRead();
-    song =socketTh->readAll();
+    this->song =socketTh->readAll();
+    qDebug()<<this->song;
     //qDebug()<<socketDescriptor<<"Data in: "<<Data;
    /* if (blockSize == 0) {
             if(socketTh->bytesAvailable() < (int)sizeof(quint16)) return;
@@ -67,12 +71,16 @@ void p2pThread::readyRead(){
 
     //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\database2.txt"); // download path
     std::string song1=this->song.toStdString().c_str();
-    std::string path="../P2Psystem/"+song1+".wav";
+    std::string path="../P2Psystem/Music/"+song1+".wav";
     QFile file(path.c_str());
     file.open(QIODevice::ReadOnly);
-    Data=file.readAll();
-    socketTh->write(Data);
+    Data2=file.readAll();
+    socketTh->write(Data2);
+    socketTh->flush();
+    qDebug()<<this->song;
     socketTh->waitForBytesWritten();
+    qDebug()<<this->song;
+    socketTh->close();
     //int filesize=0;
 
     //if (socketTh->bytesAvailable() <= 0)
@@ -86,7 +94,7 @@ void p2pThread::readyRead(){
     //file.write(Data);
     //file.close();
     //Data.resize(0);
-    socketTh->disconnectFromHost();
+    //socketTh->disconnectFromHost();
 }
 
 void p2pThread::disconnected(){

@@ -327,7 +327,6 @@ void MainWindow::on_songL_itemDoubleClicked(QListWidgetItem *item)
     socket->ip=ui->IPaddr->text();
     socket->song=ui->songName->text();
     socket->p2pconnect();
-    socket->disconnect();
     //}
     //*
     QString album_picture = "../P2Psystem/images/" + ui->songName->text() + ".jpg";
@@ -413,7 +412,6 @@ void MainWindow::on_connectButton_clicked()
     socket = new p2psocket(this);
     socket->ip=ui->IPaddr->text();
     socket->p2pconnect();//ui->IPaddr->text().toStdString().c_str();
-    socket->disconnect();
 }
 
 void MainWindow::delete_nonlocal_song() {

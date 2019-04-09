@@ -26,6 +26,11 @@ void p2psocket::p2pconnect(){
     if(!(socket->waitForConnected(3000))){
         qDebug()<<"(Client)Not Connected"<<socket->errorString();
      }
+    if(socket->waitForConnected(3000)){
+    socket->write(song.toStdString().c_str());
+    socket->waitForBytesWritten();
+    //socket->waitForReadyRead();
+    }
     /*socket->connectToHost("127.0.0.1",1234);
     if(socket->waitForConnected(3000)){
         qDebug()<<"Connected";
@@ -65,8 +70,6 @@ void p2psocket::connected(){
         //socketStream << mydata;
         //socket->waitForBytesWritten(-1);
 
-        socket->write(song.toStdString().c_str());
-        socket->waitForBytesWritten();
         //mydata.resize(0);
     //}
     //file.close();
@@ -77,11 +80,8 @@ void p2psocket::connected(){
     //QByteArray mywav=file2.readAll();
     //socket->write(mydata);
     //file2.close();
+    socket->waitForReadyRead();
     //socket->disconnectFromHost();
-}
-
-void p2psocket::disconnected(){
-    qDebug()<<"(Client)Disconnected";
 }
 
 void p2psocket::bytesWritten(qint64 bytes){
@@ -89,6 +89,7 @@ void p2psocket::bytesWritten(qint64 bytes){
 }
 
 void p2psocket::readyRead(){
+    //socket->waitForReadyRead();
     qDebug()<<"(Client)Reading: "<<socket->bytesAvailable();
     qDebug()<<socket->readAll();
     std::string song1=this->song.toStdString().c_str();
@@ -109,4 +110,9 @@ void p2psocket::readyRead(){
     file.close();
     //Data.resize(0);
     socket->disconnectFromHost();
+}
+
+void p2psocket::disconnected(){
+    qDebug()<<"(Client)Disconnected";
+    socket->close();
 }
