@@ -29,13 +29,17 @@ SOURCES += main.cpp\
     p2psocket.cpp \
     server.cpp \
     p2pthread.cpp \
-    playthread.cpp
+    playthread.cpp \
+    client.cpp \
+    send.cpp
 
 HEADERS  += mainwindow.h \
     p2psocket.h \
     server.h \
     p2pthread.h \
-    playthread.h
+    playthread.h \
+    client.h \
+    send.h
 
 FORMS    += mainwindow.ui
 

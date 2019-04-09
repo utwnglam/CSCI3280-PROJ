@@ -44,14 +44,14 @@ void p2psocket::p2pconnect(){
 
 void p2psocket::connected(){
     qDebug()<<"(Client)Connected";
+
     //socket->write("this is p2psocket");
     //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\music_database2.txt");
-    std::string song1=this->song.toStdString().c_str();
-    std::string path="../P2Psystem/Music/"+song1+".wav";
-    qDebug()<<song;
-    QFile file(path.c_str());
-    if(file.open(QIODevice::ReadOnly)){
-        mydata=file.readAll();
+    //std::string song1=this->song.toStdString().c_str();
+    //std::string path="../P2Psystem/Music/"+song1+".wav";
+    //QFile file(path.c_str());
+    //if(file.open(QIODevice::ReadOnly)){
+        //mydata=file.readAll();
         //int size =file.size();
         //socket->write(std::to_string(size).c_str());
         //QDataStream out(&mydata, QIODevice::WriteOnly);
@@ -65,11 +65,11 @@ void p2psocket::connected(){
         //socketStream << mydata;
         //socket->waitForBytesWritten(-1);
 
-        socket->write(mydata);
-        socket->waitForBytesWritten(1000);
+        socket->write(song.toStdString().c_str());
+        socket->waitForBytesWritten();
         //mydata.resize(0);
-    }
-    file.close();
+    //}
+    //file.close();
 
     //send wav:
     //QFile file2("C:\\Users\\user\\CSCI3280-PROJ\\P2Psystem\\Music\\numb.wav");
@@ -77,7 +77,7 @@ void p2psocket::connected(){
     //QByteArray mywav=file2.readAll();
     //socket->write(mydata);
     //file2.close();
-    socket->disconnectFromHost();
+    //socket->disconnectFromHost();
 }
 
 void p2psocket::disconnected(){
@@ -94,6 +94,7 @@ void p2psocket::readyRead(){
     std::string song1=this->song.toStdString().c_str();
     std::string path="../P2Psystem/Video"+song1+".wav";
     QFile file(path.c_str());
+    //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\database2.txt");
     file.open(QIODevice::WriteOnly);
     //int filesize=0;
     if (socket->bytesAvailable() <= 0)

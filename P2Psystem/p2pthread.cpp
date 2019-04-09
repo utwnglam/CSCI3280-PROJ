@@ -4,6 +4,7 @@ p2pThread::p2pThread(int ID, QObject *parent):QThread(parent)
 {
     this->socketDescriptor = ID;
     socketTh = new QTcpSocket();
+    //socketTh2= new QTcpSocket();
     qDebug()<<"(server)Start thread";
     //socketTh = new QTcpSocket();
     if(!socketTh->setSocketDescriptor(this->socketDescriptor)){
@@ -47,11 +48,12 @@ void p2pThread::sendString()  {
 
 void p2pThread::readyRead(){
 
-    blockSize=0;
+    //blockSize=0;
     //QDataStream in(socketTh);
     //in.setVersion(QDataStream::Qt_5_5);
     QByteArray Data;
-    //Data=socketTh->readAll();
+    socketTh->waitForReadyRead();
+    song =socketTh->readAll();
     //qDebug()<<socketDescriptor<<"Data in: "<<Data;
    /* if (blockSize == 0) {
             if(socketTh->bytesAvailable() < (int)sizeof(quint16)) return;
@@ -67,19 +69,22 @@ void p2pThread::readyRead(){
     std::string song1=this->song.toStdString().c_str();
     std::string path="../P2Psystem/"+song1+".wav";
     QFile file(path.c_str());
-    file.open(QIODevice::WriteOnly);
+    file.open(QIODevice::ReadOnly);
+    Data=file.readAll();
+    socketTh->write(Data);
+    socketTh->waitForBytesWritten();
     //int filesize=0;
 
-    if (socketTh->bytesAvailable() <= 0)
-        return;
+    //if (socketTh->bytesAvailable() <= 0)
+        //return;
 
-    while(socketTh->state() == QAbstractSocket::ConnectedState)  {
-        socketTh->waitForReadyRead();
-        file.write(socketTh->readAll());
+    //while(socketTh->state() == QAbstractSocket::ConnectedState)  {
+        //socketTh->waitForReadyRead();
+        //file.write(socketTh->readAll());
         //filesize =file.size();
-    }
+    //}
     //file.write(Data);
-    file.close();
+    //file.close();
     //Data.resize(0);
     socketTh->disconnectFromHost();
 }

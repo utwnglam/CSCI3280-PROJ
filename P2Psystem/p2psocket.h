@@ -34,6 +34,7 @@ public slots:
 
 private:
     QTcpSocket *socket;
+    QTcpSocket *socket2;
     QByteArray mydata;
     //QTcpServer *server;
 
