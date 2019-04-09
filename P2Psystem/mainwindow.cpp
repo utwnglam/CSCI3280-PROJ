@@ -284,8 +284,6 @@ void MainWindow::on_searchBar_textChanged(const QString &arg1)
         QStringList strlist = line.split('\'');
         QStringList forCompare = strlist;
         forCompare.removeAt(1);
-        //remove ", "
-        forCompare.removeAt(2);forCompare.removeAt(4);forCompare.removeAt(6);
 
         if (forCompare.filter(regExp).size() != 0) {
             QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
