@@ -327,6 +327,17 @@ void MainWindow::on_songL_itemDoubleClicked(QListWidgetItem *item)
     socket->ip=ui->IPaddr->text();
     socket->song=ui->songName->text();
     socket->p2pconnect();
+    if(socket->ok==true){
+        QFile file("../P2Psystem/music_database.txt");
+        if(!file.open(QIODevice::ReadWrite))
+            QMessageBox::information(0,"database not found",file.errorString());
+        QTextStream edit(&file);
+        QString tobeAdd = "'"+ socket->song+".wav" +"', '"+ socket->song +"', 'N/A', 'N/A'";
+
+        file.seek(file.size());
+        edit << endl << tobeAdd;
+        file.close();
+    }
     //}
     //*
     QString album_picture = "../P2Psystem/images/" + ui->songName->text() + ".jpg";
@@ -412,6 +423,9 @@ void MainWindow::on_connectButton_clicked()
     socket = new p2psocket(this);
     socket->ip=ui->IPaddr->text();
     socket->p2pconnect();//ui->IPaddr->text().toStdString().c_str();
+    if(socket->ok==true){
+
+    }
 }
 
 void MainWindow::delete_nonlocal_song() {

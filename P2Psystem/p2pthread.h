@@ -17,6 +17,7 @@ public:
     void run();
     QTcpServer *mServer;
     QString song;
+    bool ok;
 
 signals:
     void error(QTcpSocket::SocketError socketerror);

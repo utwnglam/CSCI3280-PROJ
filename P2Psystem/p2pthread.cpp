@@ -54,20 +54,8 @@ void p2pThread::readyRead(){
     //QDataStream in(socketTh);
     //in.setVersion(QDataStream::Qt_5_5);
     QByteArray Data2;
-    QByteArray Data;
-    socketTh->waitForReadyRead();
+    //socketTh->waitForReadyRead();
     this->song =socketTh->readAll();
-    qDebug()<<this->song;
-    //qDebug()<<socketDescriptor<<"Data in: "<<Data;
-   /* if (blockSize == 0) {
-            if(socketTh->bytesAvailable() < (int)sizeof(quint16)) return;
-            in >> blockSize;
-        }
-        if(socketTh->bytesAvailable() < blockSize)
-            return;*/
-    //in >> Data;
-    //socketTh->write(Data);
-    //socketTh->waitForBytesWritten(6000);
 
     //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\database2.txt"); // download path
     std::string song1=this->song.toStdString().c_str();
@@ -76,10 +64,8 @@ void p2pThread::readyRead(){
     file.open(QIODevice::ReadOnly);
     Data2=file.readAll();
     socketTh->write(Data2);
-    socketTh->flush();
-    qDebug()<<this->song;
+    //socketTh->flush();
     socketTh->waitForBytesWritten();
-    qDebug()<<this->song;
     socketTh->close();
     //int filesize=0;
 

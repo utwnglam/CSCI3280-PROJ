@@ -21,6 +21,7 @@ public:
     void p2pconnect();
     QString ip;
     QString song;
+    bool ok;
 
 signals:
 
