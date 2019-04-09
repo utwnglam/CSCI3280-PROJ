@@ -43,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->setupUi(this);
     setWindowTitle(tr("P2P Karaoke System"));
 
+    //delete_duplicates();
     //connect(p,SIGNAL(play()),this,SLOT(onplay()));
     //m_thread=new playthread(this);
 
@@ -81,7 +82,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
                 pItem->setData(Qt::UserRole + 1, partList[1].mid(1, partList[1].length()-2));
                 pItem->setData(Qt::UserRole + 2, partList[2].mid(1, partList[2].length()-2));
                 pItem->setData(Qt::UserRole + 3, partList[3].mid(1, tmpList[0].length()-2));
-                pItem->setText(partList[1].mid(1, partList[1].length()-2));
+                pItem->setText(partList[1].mid(1, partList[1].length()-2) + " (Local)");
                 ui->songL->addItem(pItem);
                 break;
             }
@@ -128,7 +129,7 @@ void MainWindow::on_Add_clicked()
     pItem->setData(Qt::UserRole + 1, tmpList[0]);
     pItem->setData(Qt::UserRole + 2, "N/A");
     pItem->setData(Qt::UserRole + 3, "N/A");
-    pItem->setText(tmpList[0]);
+    pItem->setText(tmpList[0] + " (Local)");
     ui->songL->addItem(pItem);
 
     //adding new line to database when adding new songs
@@ -175,8 +176,8 @@ void MainWindow::on_Del_clicked()
     edit << newpassage;
 
     //*
-    QString delPath = "/Users/JoanneCheung/Desktop/ver 1/P2Psystem/Music/" + ui->songL->item(row)->data(Qt::UserRole).toString();
-    //QString delPath = "../P2Psystem/Music/" + ui->songL->item(row)->data(Qt::UserRole).toString();
+    //QString delPath = "/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/Music/" + ui->songL->item(row)->data(Qt::UserRole).toString();
+    QString delPath = "../P2Psystem/Music/" + ui->songL->item(row)->data(Qt::UserRole).toString();
     QTextStream debug(stdout);
     debug << delPath;
     QFile delFile(delPath);
@@ -254,6 +255,7 @@ void MainWindow::on_playButton_clicked()
         connect(p, SIGNAL(GetLength(QString)), this, SLOT(onGetLength(QString)));
         ui->playButton->setText("stop");
         QIcon ico;
+        //*
         ico.addPixmap(QPixmap("../P2Psystem/images/stop.png"),QIcon::Normal,QIcon::On);
         //ico.addPixmap(QPixmap("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/images/stop.png"),QIcon::Normal,QIcon::On);
         ui->playButton->setIcon(ico);
@@ -261,6 +263,7 @@ void MainWindow::on_playButton_clicked()
     } else {
         ui->playButton->setText("play");
         QIcon ico;
+        //*
         ico.addPixmap(QPixmap("../P2Psystem/images/play.png"),QIcon::Normal,QIcon::On);
         //ico.addPixmap(QPixmap("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/images/play.png"),QIcon::Normal,QIcon::On);
         ui->playButton->setIcon(ico);
@@ -446,7 +449,8 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::delete_duplicates() {
     //function to delete database with the same file name
     //*
-    QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/music_database.txt");
+    //QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/music_database.txt");
+    QFile file("../P2Psystem/music_database.txt");
     if(!file.open(QIODevice::ReadWrite))
         QMessageBox::information(0,"database not found",file.errorString());
     QTextStream edit(&file);
