@@ -10,6 +10,7 @@
 #include <QTcpSocket>
 #include "p2psocket.h"
 #include "playthread.h"
+#include "updatabase.h"
 
 namespace Ui {
 class MainWindow;
@@ -59,9 +60,14 @@ private slots:
     void on_pushButton_clicked();
     void delete_duplicates();
 
+    void on_download_clicked();
+
+
+
 private:
     Ui::MainWindow *ui;
     QStringList myList;
+    updatabase *database;
     p2psocket *socket;
     playthread *m_thread;
     playthread *p;

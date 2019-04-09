@@ -1,13 +1,6 @@
 #include "p2psocket.h"
 #define MY_PORT 3434
 
-
-struct openFileStruct
-{
-    QString filePath;
-    QString fileName;
-};
-
 p2psocket::p2psocket(QObject *parent):QObject(parent)
 {
 }
@@ -21,7 +14,7 @@ void p2psocket::p2pconnect(){
     connect(socket,SIGNAL(bytesWritten(qint64)),this,SLOT(bytesWritten(qint64)));
 
     qDebug()<<"(Client)Connecting...";
-    socket->connectToHost(ip,1234);//"127.0.0.1" should be input
+    socket->connectToHost(this->ip,1234);//"127.0.0.1" should be input
 
     if(!(socket->waitForConnected(3000))){
         qDebug()<<"(Client)Not Connected"<<socket->errorString();
@@ -44,7 +37,8 @@ void p2psocket::p2pconnect(){
 
 void p2psocket::connected(){
     qDebug()<<"(Client)Connected";
-    socket->write(song.toStdString().c_str());
+    qDebug()<<this->song;
+    socket->write(this->song.toStdString().c_str());
     socket->waitForBytesWritten();
     //socket->write("this is p2psocket");
     //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\music_database2.txt");
@@ -88,9 +82,8 @@ void p2psocket::readyRead(){
     //qDebug()<<"(Client)Reading: "<<socket->bytesAvailable();
     //qDebug()<<socket->readAll();
     std::string song1=this->song.toStdString().c_str();
-    std::string path="../P2Psystem/Video/"+song1+".wav";
+    std::string path="../P2Psystem/Music/"+song1+".wav";
     QFile file(path.c_str());
-    //QFile file("C:\\Users\\user\\CSCI3280-PROJ\\database2.txt");
     file.open(QIODevice::WriteOnly);
     //int filesize=0;
     if (socket->bytesAvailable() <= 0)

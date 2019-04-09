@@ -10,8 +10,6 @@ server::server(QObject *parent):QTcpServer(parent)
     }*/
     pool= new QThreadPool(this);
     pool->setMaxThreadCount(6);
-    pool2= new QThreadPool(this);
-    pool2->setMaxThreadCount(6);
 }
 
 void server::newConnection(){
