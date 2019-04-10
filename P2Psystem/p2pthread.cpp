@@ -60,19 +60,7 @@ void p2pThread::readyRead(){
         socketTh->waitForBytesWritten();
         //socketTh->close();
     }
-    //int filesize=0;
 
-    //if (socketTh->bytesAvailable() <= 0)
-        //return;
-
-    //while(socketTh->state() == QAbstractSocket::ConnectedState)  {
-        //socketTh->waitForReadyRead();
-        //file.write(socketTh->readAll());
-        //filesize =file.size();
-    //}
-    //file.write(Data);
-    //file.close();
-    //Data.resize(0);
     socketTh->close();
     //socketTh->disconnectFromHost();
 }

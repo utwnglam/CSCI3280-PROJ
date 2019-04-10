@@ -407,15 +407,54 @@ void MainWindow::on_connectButton_clicked()
     database->ip=ui->IPaddr->text();
     database->databaseConnect();//ui->IPaddr->text().toStdString().c_str();
 
-    adding_new_song();
+    while(true){
+    QTime dieTime= QTime::currentTime().addSecs(2);
+    while (QTime::currentTime() < dieTime)
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+
+        if(database->ok==true){
+            QFile file("../P2Psystem/music_database2.txt");
+            //QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/music_database.txt");
+            if(!file.open(QIODevice::ReadWrite))
+                QMessageBox::information(0,"database not found",file.errorString());
+            QTextStream in(&file);
+            //QTextStream edit(&file);
+            //QString line = in.readLine();
+            //QStringList strlist = line.split('\'');
+            //QStringList forCompare = strlist;
+            while (!in.atEnd()) {
+                QString line = in.readLine();
+                QStringList strlist = line.split('\'');
+                //QStringList forCompare = strlist;
+                //forCompare.removeAt(1);
+
+                QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
+                pItem->setData(Qt::UserRole, strlist[1]);
+                pItem->setData(Qt::UserRole + 1, strlist[3]);
+                pItem->setData(Qt::UserRole + 2, strlist[5]);
+                pItem->setData(Qt::UserRole + 3, strlist[7]);
+                pItem->setText(strlist[3]);
+                ui->songL->addItem(pItem);
+
+
+            }
+
+            file.close();
+            database->ok=false;
+            break;
+        }
+    }
+
+
+    //adding_new_song();
 }
 
 void MainWindow::adding_new_song() {
     //adding new songs
 
     //the path of the new database
-    QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/music_database2.txt");
-    //QFile file("../P2Psystem/music_database2.txt");
+    //QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/music_database2.txt");
+    QFile file("../P2Psystem/music_database2.txt");
 
     //open the file and read
     if(!file.open(QIODevice::ReadWrite))
@@ -450,6 +489,7 @@ void MainWindow::adding_new_song() {
         }
     }
 }
+
 
 void MainWindow::delete_nonlocal_song() {
     ui->songL->clear();
@@ -596,46 +636,47 @@ void MainWindow::on_download_clicked()
     QFile file("../P2Psystem/music_database.txt");
     if(!file.open(QIODevice::ReadWrite))
         QMessageBox::information(0,"database not found",file.errorString());
-   /* QTextStream in(&file);
+    QTextStream in(&file);
     bool nomatchResult = true;
     //INPUTING DATABASE INTO ARRAY
-    QString whole = in.readAll();
-    QStringList linelist = whole.split('\n');
-    for(int i = myList.size()-1; i >= 0; i -= 1) {
-        for(int count = 0; count < linelist.size(); count++) {
-
-            //finding its according partList item
-            QStringList partList = linelist[count].split(", ");
-
-            if (myList[i] == partList[0].mid(1, partList[0].length()-2)) {
-                /*QStringList tmpList = partList[3].split('\r');
-                QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
-                pItem->setData(Qt::UserRole, partList[0].mid(1, partList[0].length()-2));
-                pItem->setData(Qt::UserRole + 1, partList[1].mid(1, partList[1].length()-2));
-                pItem->setData(Qt::UserRole + 2, partList[2].mid(1, partList[2].length()-2));
-                pItem->setData(Qt::UserRole + 3, partList[3].mid(1, tmpList[0].length()-2));
-                pItem->setText(partList[1].mid(1, partList[1].length()-2) + " (Local)");
-                ui->songL->addItem(pItem);
-                nomatchResult = false;
-                break;
-            }
+    //QString whole = in.readAll();
+    //QStringList linelist = whole.split('\n');
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        QStringList strlist = line.split('\'');
+        if(strlist[3]==songname){
+            nomatchResult=false;
+            break;
         }
-    }*/
+   }
 
-    //if(nomatchResult == false ){
+    if(nomatchResult == true ){
         printf("new song");
         socket = new p2psocket(this);
         socket->ip=ui->IPaddr->text();
         socket->song=songname;
         socket->p2pconnect();
-        if(socket->ok==true){
-            QTextStream edit(&file);
-            QString tobeAdd = "'"+ songname+".wav" +"', '"+ songname +"', 'N/A', 'N/A'";
-            file.seek(file.size());
-            edit << endl << tobeAdd;
-            file.close();
+        while(true){
+            QTime dieTime= QTime::currentTime().addSecs(3);
+            while (QTime::currentTime() < dieTime)
+                QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+            if(socket->ok==true){
+                QTextStream edit(&file);
+                QString tobeAdd = "'"+ songname+".wav" +"', '"+ songname +"', 'N/A', 'N/A'";
+                file.seek(file.size());
+                edit << endl << tobeAdd;
+                file.close();
+                socket->ok==false;
+                QList<QListWidgetItem *> itemList = ui->songL->selectedItems();
+                int row = ui->songL->row(itemList[0]);
+                itemList[0]->setText(songname+" (Local)");
+                break;
+
+            }
         }
-    //}
+    }else{
+        qDebug()<<"this is local song";
+    }
 }
 
 
