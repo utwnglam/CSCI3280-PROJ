@@ -418,25 +418,42 @@ void MainWindow::on_connectButton_clicked()
             if(!file.open(QIODevice::ReadWrite))
                 QMessageBox::information(0,"database not found",file.errorString());
             QTextStream in(&file);
+
             //QTextStream edit(&file);
             //QString line = in.readLine();
             //QStringList strlist = line.split('\'');
             //QStringList forCompare = strlist;
             while (!in.atEnd()) {
+                QStringList strlist3;
+                bool different=true;
                 QString line = in.readLine();
                 QStringList strlist = line.split('\'');
+                QFile file2("../P2Psystem/music_database.txt");
+                //QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/music_database.txt");
+                if(!file2.open(QIODevice::ReadWrite))
+                    QMessageBox::information(0,"database not found",file2.errorString());
+                QTextStream in2(&file2);
+                while(!in2.atEnd()){
+                QString line2 = in2.readLine();
+                QStringList strlist2 = line2.split('\'');
                 //QStringList forCompare = strlist;
                 //forCompare.removeAt(1);
-
-                QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
-                pItem->setData(Qt::UserRole, strlist[1]);
-                pItem->setData(Qt::UserRole + 1, strlist[3]);
-                pItem->setData(Qt::UserRole + 2, strlist[5]);
-                pItem->setData(Qt::UserRole + 3, strlist[7]);
-                pItem->setText(strlist[3]);
-                ui->songL->addItem(pItem);
-
-
+                if(strlist2[3]==strlist[3]){
+                    different=false;
+                    break;
+                }
+                strlist3=strlist;
+                }
+                if(different==true){
+                    QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
+                    pItem->setData(Qt::UserRole, strlist3[1]);
+                    pItem->setData(Qt::UserRole + 1, strlist3[3]);
+                    pItem->setData(Qt::UserRole + 2, strlist3[5]);
+                    pItem->setData(Qt::UserRole + 3, strlist3[7]);
+                    pItem->setText(strlist3[3]);
+                    ui->songL->addItem(pItem);
+                }
+                file2.close();
             }
 
             file.close();
@@ -676,7 +693,7 @@ void MainWindow::on_download_clicked()
                 QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
             if(socket->ok==true){
                 QTextStream edit(&file);
-                QString tobeAdd = "'"+ songname+".wav" +"', '"+ songname +"', '"+songname+"', '"+songname+"'";
+                QString tobeAdd = "'"+ songname+".wav" +"', '"+ songname +"', '"+strlist2[5]+"', '"+strlist2[7]+"'";
                 file.seek(file.size());
                 edit << endl << tobeAdd;
                 file.close();
