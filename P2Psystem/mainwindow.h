@@ -47,7 +47,7 @@ private slots:
     void on_Edit_clicked();
 
     //void on_ProgressBar_valueChanged(int value);
-    //void adding_new_song();
+    void adding_new_song();
     void on_connectButton_clicked();
     void on_disButton_clicked();
     void on_p2pButton_clicked();

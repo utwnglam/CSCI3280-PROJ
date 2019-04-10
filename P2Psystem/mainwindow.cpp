@@ -406,33 +406,49 @@ void MainWindow::on_connectButton_clicked()
     database =new updatabase(this);
     database->ip=ui->IPaddr->text();
     database->databaseConnect();//ui->IPaddr->text().toStdString().c_str();
-    QFile file("../P2Psystem/music_database2.txt");
-    //QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/P2Psystem/music_database.txt");
+
+    adding_new_song();
+}
+
+void MainWindow::adding_new_song() {
+    //adding new songs
+
+    //the path of the new database
+    QFile file("/Users/JoanneCheung/Desktop/3280 PROJ/music_database2.txt");
+    //QFile file("../P2Psystem/music_database2.txt");
+
+    //open the file and read
     if(!file.open(QIODevice::ReadWrite))
         QMessageBox::information(0,"database not found",file.errorString());
-    QTextStream in(&file);
-    //QTextStream edit(&file);
-    //QString line = in.readLine();
-    //QStringList strlist = line.split('\'');
-    //QStringList forCompare = strlist;
-    while (!in.atEnd()) {
-        QString line = in.readLine();
-        QStringList strlist = line.split('\'');
-        //QStringList forCompare = strlist;
-        //forCompare.removeAt(1);
+    QTextStream edit(&file);
+    QString wholePassage = edit.readAll();
+    QStringList lineList = wholePassage.split('\n');
 
-        QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
-        pItem->setData(Qt::UserRole, strlist[1]);
-        pItem->setData(Qt::UserRole + 1, strlist[3]);
-        pItem->setData(Qt::UserRole + 2, strlist[5]);
-        pItem->setData(Qt::UserRole + 3, strlist[7]);
-        pItem->setText(strlist[3]);
-        ui->songL->addItem(pItem);
+    //compare with myList
+    for(int i = 0; i <lineList.size(); i++) {
+        bool NoNeedtoAdd = false;
+        QStringList partList = lineList[i].split(", ");
+        QString tobecompared = partList[0].mid(1, partList[0].size()-2);
+        for (int j = 0; j < myList.size(); j++) {
+            if (tobecompared == myList[j]) {
+                NoNeedtoAdd = true;
+            }
+        }
 
+        //if needed, add into the songL
+        if (!NoNeedtoAdd) {
+            QStringList tmpList = partList[3].split('\r');
+            QListWidgetItem *pItem = new QListWidgetItem(ui->songL);
+            pItem->setData(Qt::UserRole, tobecompared);
+            pItem->setData(Qt::UserRole + 1, partList[1].mid(1, partList[1].size()-2));
+            pItem->setData(Qt::UserRole + 2, partList[2].mid(1, partList[2].size()-2));
+            pItem->setData(Qt::UserRole + 3, tmpList[0].mid(1, tmpList[0].size()-2));
+            pItem->setText(partList[1].mid(1, partList[1].size()-2));
+            ui->songL->addItem(pItem);
 
+            myList.append(tobecompared);
+        }
     }
-    file.close();
-
 }
 
 void MainWindow::delete_nonlocal_song() {
