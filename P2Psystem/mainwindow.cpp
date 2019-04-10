@@ -634,6 +634,20 @@ void MainWindow::on_download_clicked()
     QString songname=ui->songName->text();
     //if no a local song>>down
     QFile file("../P2Psystem/music_database.txt");
+    QFile file2("../P2Psystem/music_database2.txt");
+    if(!file2.open(QIODevice::ReadWrite))
+        QMessageBox::information(0,"database not found",file2.errorString());
+    QTextStream in2(&file2);
+    QStringList strlist2;
+    while (!in2.atEnd()) {
+        QString line = in2.readLine();
+        QStringList strlist = line.split('\'');
+        if(strlist[3]==songname){
+            strlist2=strlist;
+            break;
+        }
+   }
+    file2.close();
     if(!file.open(QIODevice::ReadWrite))
         QMessageBox::information(0,"database not found",file.errorString());
     QTextStream in(&file);
@@ -662,7 +676,7 @@ void MainWindow::on_download_clicked()
                 QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
             if(socket->ok==true){
                 QTextStream edit(&file);
-                QString tobeAdd = "'"+ songname+".wav" +"', '"+ songname +"', 'N/A', 'N/A'";
+                QString tobeAdd = "'"+ songname+".wav" +"', '"+ songname +"', '"+songname+"', '"+songname+"'";
                 file.seek(file.size());
                 edit << endl << tobeAdd;
                 file.close();
